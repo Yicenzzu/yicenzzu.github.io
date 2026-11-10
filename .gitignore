@@ -1,32 +1,10 @@
-# Bundler cache
-.bundle
-vendor
-Gemfile.lock
-
-# Jekyll cache
-.jekyll-cache
-.jekyll-metadata
-_site
-
-# RubyGems
-*.gem
-
-# NPM dependencies
-node_modules
-package-lock.json
-
-# IDE configurations
-.idea
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
-!.vscode/tasks.json
-
-# Misc
-_sass/vendors
-assets/js/dist
-
-# Hidden system files
-*~
+# OS / editor noise
 .DS_Store
 Thumbs.db
+*~
+
+# No build step — only third-party folders are ignored
+node_modules/
+
+# Optional local preview folders
+_site/

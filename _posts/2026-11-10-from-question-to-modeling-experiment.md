@@ -1,6 +1,14 @@
 ---
 title: "From a Research Question to a Modeling Experiment"
 date: 2026-11-10 09:00:00 +0800
+categories:
+  - Research notes
+tags:
+  - Modeling
+  - Scientific computing
+description: Turning an open question into a small, controlled set of model runs.
+cover: static/assets/img/posts/from-question-to-modeling-experiment.jpg
+cover_alt: Aerosol and atmospheric chemistry visualization used as the cover for a modeling experiment note
 ---
 
 A useful modeling study begins with a question that can be answered by a clear comparison. Before changing a parameter or launching a simulation, write down the assumption you want to examine and the result that would help you interpret it.

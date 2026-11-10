@@ -1,4 +1,179 @@
----
-layout: home
-# Index page
----
+<!doctype html>
+<html lang="en" data-mode="system" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e">
+    <meta name="description" content="Academic homepage, publications, research projects, and field notes of Yicen Liu.">
+    <meta property="og:title" content="Yicen Liu">
+    <meta property="og:description" content="Academic homepage, publications, research projects, and field notes of Yicen Liu.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yicenzzu.github.io/">
+    <title>Yicen Liu</title>
+
+    <link id="favicon-link" rel="icon" type="image/svg+xml" href="static/assets/img/favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Source+Sans+Pro:wght@400;600;700&display=swap"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
+    >
+    <link rel="stylesheet" href="static/css/main.css">
+
+    <!-- Apply the stored colour mode before first paint to avoid a flash. -->
+    <script>
+      (function () {
+        try {
+          var mode = localStorage.getItem('theme') || 'system';
+          var dark =
+            mode === 'dark' ||
+            (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var root = document.documentElement;
+          root.setAttribute('data-mode', mode);
+          root.setAttribute('data-theme', dark ? 'dark' : 'light');
+        } catch (error) {
+          /* localStorage can be unavailable in private mode. */
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <!-- ============================================================
+         Sidebar
+         ============================================================ -->
+    <aside id="sidebar" aria-label="Sidebar">
+      <header class="profile-wrapper">
+        <a href="#/" id="avatar" class="rounded-circle" aria-label="Yicen Liu — home">
+          <img id="avatar-img" src="static/assets/img/profile_YL_casual.jpg" width="112" height="112" alt="Avatar">
+        </a>
+        <a class="site-title" id="site-title" href="#/">Yicen Liu</a>
+        <p class="site-subtitle" id="site-subtitle">Ph.D. Candidate · Environmental Engineering</p>
+      </header>
+
+      <nav class="sidebar-nav" aria-label="Primary navigation">
+        <ul class="nav" id="nav-list"></ul>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="mode-menu">
+          <button
+            type="button"
+            class="icon-button"
+            id="mode-toggle"
+            aria-label="Switch colour mode"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fa-regular fa-sun" data-mode-icon="light"></i>
+            <i class="fa-regular fa-moon" data-mode-icon="dark"></i>
+            <i class="fa-solid fa-display" data-mode-icon="system"></i>
+          </button>
+          <ul class="mode-menu-list" id="mode-menu-list" hidden>
+            <li>
+              <button type="button" data-mode="light"><i class="fa-regular fa-sun"></i> Light</button>
+            </li>
+            <li>
+              <button type="button" data-mode="dark"><i class="fa-regular fa-moon"></i> Dark</button>
+            </li>
+            <li>
+              <button type="button" data-mode="system"><i class="fa-solid fa-display"></i> System</button>
+            </li>
+          </ul>
+        </div>
+
+        <span class="icon-border" aria-hidden="true"></span>
+        <div class="social-links" id="social-links"></div>
+      </div>
+    </aside>
+
+    <!-- ============================================================
+         Main wrapper
+         ============================================================ -->
+    <div id="main-wrapper">
+      <div class="container">
+        <header id="topbar-wrapper">
+          <div id="topbar">
+            <button type="button" id="sidebar-trigger" class="icon-button" aria-label="Open sidebar" aria-expanded="false">
+              <i class="fas fa-bars"></i>
+            </button>
+
+            <nav id="breadcrumb" aria-label="Breadcrumb">
+              <span id="breadcrumb-text">Home</span>
+            </nav>
+
+            <div id="topbar-title">Yicen Liu</div>
+
+            <div class="topbar-actions">
+              <button type="button" id="search-trigger" class="icon-button" aria-label="Search" aria-expanded="false">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="search-panel" class="search-panel" hidden>
+            <div class="search-panel__inner">
+              <i class="fas fa-search" aria-hidden="true"></i>
+              <input
+                id="search-input"
+                type="search"
+                placeholder="Search posts and pages…"
+                aria-label="Search posts and pages"
+                autocomplete="off"
+                spellcheck="false"
+              >
+              <button type="button" id="search-cancel" class="icon-button" aria-label="Close search">
+                <i class="fas fa-xmark"></i>
+              </button>
+            </div>
+            <div id="search-results" class="search-results" aria-live="polite"></div>
+          </div>
+        </header>
+
+        <div class="content-row" id="content-row">
+          <main id="main-content" class="content-col" tabindex="-1">
+            <div id="page-content" aria-live="polite">
+              <div class="loader" aria-label="Loading">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </main>
+
+          <aside id="panel-wrapper" class="panel-col" aria-label="Panel" hidden>
+            <div id="panel-content"></div>
+          </aside>
+        </div>
+
+        <footer id="site-footer" aria-label="Site information">
+          <p id="footer-left"></p>
+          <p id="footer-right"></p>
+        </footer>
+      </div>
+    </div>
+
+    <button type="button" id="back-to-top" aria-label="Scroll to top">
+      <i class="fas fa-angle-up"></i>
+    </button>
+
+    <div id="mask" hidden></div>
+
+    <noscript>
+      <p class="noscript-note">
+        This site renders its content with JavaScript. Please enable JavaScript to read the pages and posts.
+      </p>
+    </noscript>
+
+    <script src="static/js/vendor/js-yaml.min.js"></script>
+    <script src="static/js/vendor/marked.min.js"></script>
+    <script src="static/js/blog.js"></script>
+    <script src="static/js/main.js"></script>
+  </body>
+</html>

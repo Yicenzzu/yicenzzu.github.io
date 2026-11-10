@@ -1,8 +1,6 @@
 ---
-layout: page
 title: Archives
-icon: fas fa-folder-open
-order: 4
+description: Skills, experience, and awards.
 ---
 
 <div class="academic-archive">
@@ -28,7 +26,7 @@ order: 4
           <li>Linux</li>
           <li>Bash/Shell</li>
           <li>HTML/CSS</li>
-          <li>LaTex</li>
+          <li>LaTeX</li>
         </ul>
       </div>
     </div>
@@ -42,7 +40,7 @@ order: 4
           <div class="academic-cv-date"><span>Jan. - May 2022</span></div>
           <div class="academic-cv-detail">
             <h3>Teaching</h3>
-            <p>Tadiative Transfer-Remote Sens (ATMS 304)</p>
+            <p>Radiative Transfer-Remote Sensing (ATMS 304)</p>
             <ul><li>Spring 2022 List of Teachers Ranked as Excellent by Their Students.</li></ul>
           </div>
         </div>

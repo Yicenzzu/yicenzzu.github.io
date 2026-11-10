@@ -1,0 +1,85 @@
+# ============================================================
+#  Site configuration
+#  This file is read at runtime by static/js/main.js.
+#  No build step, no Jekyll, no Ruby required.
+# ============================================================
+
+title: Yicen Liu
+tagline: Ph.D. Candidate · Environmental Engineering
+description: >-
+  Academic homepage, publications, research projects, and field notes of Yicen Liu.
+url: https://yicenzzu.github.io
+lang: en
+timezone: Asia/Shanghai
+
+# Paths are relative to index.html so the site also works from a
+# GitHub Pages project sub-path.
+avatar: static/assets/img/profile_YL_casual.jpg
+favicon: static/assets/img/favicon.svg
+
+# ------------------------------------------------------------
+#  Hero (home page)
+# ------------------------------------------------------------
+hero:
+  eyebrow: Academic homepage
+  title: Yicen Liu
+  role: "Ph.D. Candidate in Environmental Engineering<br>University of Illinois Urbana-Champaign"
+  image: static/assets/img/profile_YL_casual.jpg
+  image_alt: Portrait of Yicen Liu
+  links:
+    - label: Selected publications
+      url: "#/publications/"
+    - label: Research projects
+      url: "#/projects/"
+    - label: CV & experience
+      url: "#/archives/"
+
+# ------------------------------------------------------------
+#  Sidebar navigation
+# ------------------------------------------------------------
+nav:
+  - id: home
+    label: Home
+    icon: fas fa-home
+    file: home.md
+  - id: blog
+    label: Blog
+    icon: fas fa-pen-nib
+    file: blog.md
+  - id: publications
+    label: Publications
+    icon: fas fa-book-open
+    file: publications.md
+  - id: projects
+    label: Projects
+    icon: fas fa-diagram-project
+    file: projects.md
+  - id: archives
+    label: Archives
+    icon: fas fa-folder-open
+    file: archives.md
+  - id: about
+    label: About
+    icon: fas fa-user
+    file: about.md
+
+# ------------------------------------------------------------
+#  Sidebar social links
+# ------------------------------------------------------------
+social:
+  - label: GitHub
+    icon: fab fa-github
+    url: https://github.com/Yicenzzu
+  - label: Email
+    icon: fas fa-envelope
+    url: mailto:yicenl2@illinois.edu
+
+# ------------------------------------------------------------
+#  Footer
+# ------------------------------------------------------------
+footer:
+  copyright: Yicen Liu
+  license: Some rights reserved.
+  license_url: https://creativecommons.org/licenses/by/4.0/
+  credit: Plain HTML, CSS & JavaScript.
+  credit_url: https://github.com/Yicenzzu
