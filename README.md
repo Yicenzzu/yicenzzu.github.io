@@ -1,4 +1,4 @@
-# Yicen Liu · Academic Homepage
+# Haotian Li · Academic Homepage
 
 一个**不需要构建**的静态学术主页。页面在浏览器中直接读取 `config.yml`、`_pages/*.md` 和 `_posts/*.md`，用 JavaScript 渲染，布局与交互参考 <https://yicenzzu.github.io/>。
 
@@ -18,12 +18,21 @@
 │   ├── blog.md                  # 博客列表页
 │   ├── projects.md              # 项目
 │   └── publications.md          # 论文 / 发表
-├── _posts/                      # 文章只放这里
-│   ├── 2026-11-10-reproducible-data-analysis.md
-│   └── 2026-11-10-from-question-to-modeling-experiment.md
+├── _posts/                      # 每篇文章一个文件夹，文章和素材放在一起
+│   ├── 2026-11-10-deepseek-3d-generation/
+│   │   ├── 2026-11-10-deepseek-3d-generation.md
+│   │   └── data/                # 封面、图片、demos、视频
+│   ├── 2026-11-10-reproducible-data-analysis/
+│   │   ├── 2026-11-10-reproducible-data-analysis.md
+│   │   └── data/
+│   └── 2026-11-10-from-question-to-modeling-experiment/
+│       ├── 2026-11-10-from-question-to-modeling-experiment.md
+│       └── data/
 ├── static/
-│   ├── assets/img/              # 头像、背景、文章配图
-│   ├── css/main.css
+│   ├── assets/img/              # 头像、项目/论文配图
+│   ├── css/
+│   │   ├── main.css
+│   │   └── ai-post.css          # AI 作品页的展示布局
 │   └── js/
 │       ├── main.js              # 读取 config.yml + _pages/*.md，负责路由与界面
 │       ├── blog.js              # 维护 POSTS 数组，渲染博客列表和正文
@@ -77,7 +86,18 @@ description: 页面副标题（可选）
 
 ### 发布新文章
 
-1. 在 `_posts/` 新建 Markdown 文件，例如：
+每篇文章一个文件夹，文章和素材放在一起：
+
+```text
+_posts/
+└── 2026-11-11-my-new-post/
+    ├── 2026-11-11-my-new-post.md
+    └── data/
+        ├── cover.jpg
+        └── images/
+```
+
+1. 新建文章文件夹和 Markdown 文件：
 
    ```markdown
    ---
@@ -86,38 +106,42 @@ description: 页面副标题（可选）
    categories:
      - Research notes
    tags:
-     - Aerosol
+     - Agents
    description: 列表页摘要（可选；不写会自动截取正文）
-   cover: static/assets/img/posts/my-cover.jpg
+   cover: data/cover.jpg
    cover_alt: 封面图的替代文字
    ---
+
+   ![配图](data/images/example.jpg)
 
    正文……
    ```
 
-2. 在 `static/js/blog.js` 顶部的 `POSTS` 数组中追加一项：
+   文章里的图片、视频、demo 都写 `data/...`，渲染时会自动解析到该文章自己的 `data/` 目录。
+
+2. 在 `static/js/blog.js` 顶部的 `POSTS` 数组里加一行 Markdown 路径：
 
    ```js
-   {
-     file: '_posts/2026-11-11-my-new-post.md',
-     slug: 'my-new-post'
-   }
+   const POSTS = [
+     '_posts/2026-11-11-my-new-post/2026-11-11-my-new-post.md',
+     // ...
+   ];
    ```
 
-   `slug` 就是文章地址 `#/posts/my-new-post/`。保存后刷新页面即可。
+   slug 会自动从文件名去掉日期前缀得到，也就是 `#/posts/my-new-post/`。
 
 3. 文章会自动按日期倒序出现在首页 “Latest notes” 和 `#/blog/` 列表里，同时进入搜索索引。
 
 ### 替换图片
 
-- 头像：替换 `static/assets/img/profile_YL_casual.jpg`，或在 `config.yml` 的 `avatar` / `hero.image` 中改路径。
+- 头像：替换 `static/assets/img/avatar_haotian.jpg`（侧边栏）和 `static/assets/img/profile_haotian.jpg`（首页大图），或在 `config.yml` 的 `avatar` / `hero.image` 中改路径。
 - 项目配图：`static/assets/img/projects/`
 - 论文配图：`static/assets/img/publications/`
-- 文章封面：`static/assets/img/posts/`，在文章 front matter 里用 `cover` 指定；不写 `cover` 就不显示封面。
+- 文章封面和配图：放在该文章自己的 `_posts/<文章文件夹>/data/` 里，front matter 用 `cover: data/...`。
 
 替换图片后如果浏览器仍显示旧图，按 `Ctrl + F5` 强制刷新，或给新图片换一个文件名。
 
-> 部署时一定要把整个 **`static` 目录**（尤其是 `static/assets/img/`）一起上传。只上传 HTML/CSS/JS 而漏掉图片目录，页面就会出现图片 404、只显示替代文字的情况。
+> 部署时一定要把 **`_posts`、`static` 和 `.nojekyll`** 一起上传。`.nojekyll` 不能删，否则 GitHub Pages 的 Jekyll 会忽略 `_posts` 目录，文章会 404。
 
 ## 功能
 

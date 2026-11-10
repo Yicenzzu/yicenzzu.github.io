@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>从一句话，到一个成品 · Harness Flow</title>
+<style>
+  :root{
+    --paper:#f2ecde;
+    --card:#fbf7ed;
+    --ink:#1a1610;
+    --ink-2:#554d3d;
+    --ink-3:#8a816e;
+    --red:#c6402a;
+    --red-soft:rgba(198,64,42,.14);
+    --green:#1e7150;
+    --line:rgba(26,22,16,.34);
+    --hair:rgba(26,22,16,.15);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:#0f0d0a}
+  body{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+  #stage{
+    position:absolute;left:50%;top:50%;width:1920px;height:1080px;
+    transform-origin:center center;background:var(--paper);overflow:hidden;
+  }
+  .paper{
+    position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 720px at 16% -6%, #fbf6e9 0%, rgba(251,246,233,0) 62%),
+      radial-gradient(900px 600px at 96% 104%, #ece4d2 0%, rgba(236,228,210,0) 60%),
+      var(--paper);
+  }
+  .grid{
+    position:absolute;inset:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(26,22,16,.038) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,22,16,.038) 1px, transparent 1px),
+      linear-gradient(rgba(26,22,16,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,22,16,.055) 1px, transparent 1px);
+    background-size:48px 48px,48px 48px,240px 240px,240px 240px;
+  }
+  .reg{position:absolute;width:26px;height:26px;opacity:.32;pointer-events:none}
+  .reg::before,.reg::after{content:"";position:absolute;background:var(--ink)}
+  .reg::before{width:26px;height:1px;top:0;left:0}
+  .reg::after{width:1px;height:26px;top:0;left:0}
+  .reg.tl{left:28px;top:28px}
+  .reg.tr{right:28px;top:28px;transform:scaleX(-1)}
+  .reg.bl{left:28px;bottom:28px;transform:scaleY(-1)}
+  .reg.br{right:28px;bottom:28px;transform:scale(-1,-1)}
+
+  /* ── masthead ─────────────────────────────────────────── */
+  .mast{position:absolute;left:80px;top:88px;width:920px}
+  .markline{display:flex;align-items:center;gap:11px;font:10px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.16em;color:var(--ink-2)}
+  .markline .sq{width:11px;height:11px;background:var(--red);flex:none}
+  .markline .sep{width:26px;height:1px;background:var(--hair)}
+  .eyebrow{margin-top:36px;font-size:12.5px;letter-spacing:.16em;color:var(--ink-2);font-weight:500}
+  h1{margin-top:14px;font-family:"Noto Serif SC","SimSun",serif;font-size:84px;line-height:1.1;font-weight:600;letter-spacing:-.022em;color:var(--ink)}
+  h1 .line{display:block;overflow:hidden;padding-bottom:4px}
+  h1 .line>span{display:block;will-change:transform}
+  .sub{margin-top:20px;font-size:18px;line-height:1.78;color:var(--ink-2);max-width:780px;letter-spacing:.005em}
+  .sub b{font-weight:600;color:var(--ink)}
+
+  /* ── phase board ──────────────────────────────────────── */
+  .phase{position:absolute;left:1164px;top:112px;width:676px}
+  .phaseTop{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--hair);font:10px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.14em;color:var(--ink-3)}
+  .phaseTop b{font-weight:400;color:var(--ink-2)}
+  .phaseName{margin-top:16px;font-family:"Noto Serif SC","SimSun",serif;font-size:50px;line-height:1.18;font-weight:600;letter-spacing:-.01em;color:var(--ink);will-change:transform,opacity}
+  .phaseDesc{margin-top:10px;font-size:12.5px;line-height:1.65;color:var(--ink-2);min-height:21px;letter-spacing:.02em;will-change:transform,opacity}
+  .steps{display:flex;align-items:center;margin-top:24px}
+  .step{width:8px;height:8px;border:1px solid var(--ink-3);border-radius:50%;background:transparent;flex:none;position:relative}
+  .step.on{background:var(--red);border-color:var(--red);box-shadow:0 0 0 4px var(--red-soft)}
+  .step.done{background:var(--ink);border-color:var(--ink)}
+  .stepbar{height:1px;background:var(--hair);flex:1;margin:0 9px}
+  .stepbar.done{background:var(--ink);opacity:.45}
+  .steps .stepbar:first-child,.steps .stepbar:last-child{display:none}
+
+  /* ── cards ────────────────────────────────────────────── */
+  .card{
+    position:absolute;top:460px;width:240px;height:345px;
+    background:var(--card);border:1px solid var(--line);
+    padding:15px 16px 14px;opacity:0;will-change:transform,opacity;
+  }
+  #c1{left:80px} #c2{left:384px} #c3{left:688px}
+  #c4{left:992px} #c5{left:1296px} #c6{left:1600px}
+  .card.active{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+  .card::before,.card::after{content:"";position:absolute;width:13px;height:13px;border-color:var(--red);border-style:solid;opacity:0;pointer-events:none}
+  .card::before{left:-2px;top:-2px;border-width:2px 0 0 2px}
+  .card::after{right:-2px;bottom:-2px;border-width:0 2px 2px 0}
+  .card.active::before,.card.active::after{opacity:1}
+  .idxrow{display:flex;align-items:center;justify-content:space-between;font:9.5px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.14em;color:var(--ink-3)}
+  .idxrow .n{color:var(--red)}
+  .dot{width:7px;height:7px;border:1px solid var(--ink-3);border-radius:50%;flex:none}
+  .card.active .dot{background:var(--red);border-color:var(--red)}
+  .card.done .dot{background:var(--ink);border-color:var(--ink)}
+  .card h2{margin-top:15px;font-family:"Noto Serif SC","SimSun",serif;font-size:29px;line-height:1.1;font-weight:600;letter-spacing:-.01em}
+  .card .role{margin-top:6px;font:9.5px/1.4 "Cascadia Mono",Consolas,monospace;color:var(--ink-3);letter-spacing:.04em}
+  .body{position:absolute;left:16px;right:16px;top:112px;bottom:13px}
+
+  /* 01 */
+  .quote{border:1px solid var(--line);background:rgba(255,255,255,.42);padding:12px 12px 14px;position:relative}
+  .quote .qm{font-family:Georgia,serif;font-size:30px;line-height:.55;color:var(--red);display:block;margin-bottom:7px}
+  .quote p{font-family:"Noto Serif SC","SimSun",serif;font-size:17px;line-height:1.62;color:var(--ink)}
+  .wave{position:absolute;left:0;right:0;bottom:0;height:42px;display:flex;align-items:center;gap:3px}
+  .wave i{width:3px;height:4px;background:var(--red);display:block;opacity:.85}
+  .waveMeta{position:absolute;left:0;bottom:-3px;font:8.5px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.12em;color:var(--ink-3)}
+
+  /* 02 */
+  .term{background:#1b1712;color:#e9e1d1;height:196px;padding:9px 10px 8px;position:relative;border-radius:1px;overflow:hidden}
+  .term .tbar{display:flex;align-items:center;gap:4px;height:11px;margin-bottom:6px}
+  .term .tbar i{width:5px;height:5px;background:#5a5245;display:block}
+  .term .tbar span{margin-left:auto;font:8px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.1em;color:#7d7463}
+  .term .ln{font:10.5px/1.62 "Cascadia Mono",Consolas,monospace;white-space:pre;color:#d9d1c1;height:17px;overflow:hidden}
+  .term .ln.p{color:#e59a83}
+  .term .ln.ok{color:#8fc3a7}
+  .cursor{display:inline-block;width:6px;height:10px;background:#e9e1d1;vertical-align:-1px;margin-left:2px}
+
+  /* 03 */
+  .chips{display:flex;flex-direction:column;gap:7px}
+  .chip{height:40px;border:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 8px;background:rgba(26,22,16,0);will-change:transform,background,color}
+  .chip .g{width:19px;height:19px;border:1px solid currentColor;display:grid;place-items:center;font:8.5px/1 "Cascadia Mono",Consolas,monospace;flex:none;opacity:.75}
+  .chip .txt{min-width:0;display:flex;flex-direction:column;justify-content:center}
+  .chip .nm{display:block;font:9.5px/1.15 "Cascadia Mono",Consolas,monospace;letter-spacing:-.01em;white-space:nowrap}
+  .chip .sub2{display:block;font-size:8.5px;line-height:1.3;opacity:.62;margin-top:3px;white-space:nowrap}
+  .skillNote{position:absolute;left:0;bottom:-2px;font:8.5px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.1em;color:var(--ink-3)}
+
+  /* 04 */
+  .coreWrap{position:relative;height:150px}
+  .coreWrap svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);overflow:visible}
+  .status{margin-top:2px;font:9.5px/1.5 "Cascadia Mono",Consolas,monospace;color:var(--ink-2);display:flex;align-items:center;gap:6px;letter-spacing:.02em}
+  .status i{width:5px;height:5px;background:var(--red);display:block;flex:none}
+  .codeTicker{margin-top:7px;font:9px/1.55 "Cascadia Mono",Consolas,monospace;color:var(--ink-3)}
+  .codeTicker div{white-space:nowrap;overflow:hidden;height:14px}
+
+  /* 05 */
+  .browser{border:1px solid var(--ink);background:#fffdf6;height:139px;position:relative;overflow:hidden}
+  .bTop{height:18px;border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:3px;padding:0 5px;background:#f6f1e4}
+  .bTop i{width:4px;height:4px;background:#a99f8b;display:block}
+  .bTop .url{margin-left:4px;font:7px/1 "Cascadia Mono",Consolas,monospace;color:var(--ink-3);letter-spacing:.02em}
+  .page{position:relative;height:120px;padding:9px 9px 0;background:#fffdf6}
+  .pHl{position:relative;height:7px;background:var(--ink);width:62%}
+  .pHl.two{width:44%;margin-top:2px}
+  .pSub{position:relative;height:3px;background:rgba(26,22,16,.28);width:86%;margin-top:3px}
+  .pSub.s2{width:70%}
+  .pImg{position:absolute;right:8px;top:9px;width:55px;height:42px;border:1px solid var(--hair);background:
+    linear-gradient(135deg,transparent 49.2%,rgba(26,22,16,.16) 49.6%,rgba(26,22,16,.16) 50.4%,transparent 50.8%),
+    linear-gradient(45deg,transparent 49.2%,rgba(26,22,16,.16) 49.6%,rgba(26,22,16,.16) 50.4%,transparent 50.8%),#f4eee0}
+  .pCols{position:absolute;left:9px;right:9px;bottom:8px;display:flex;gap:5px}
+  .pCols i{height:24px;background:#f1ead9;border:1px solid rgba(26,22,16,.08);flex:1}
+  .anno{position:absolute;left:4px;top:3px;border:1px dashed var(--red);pointer-events:none}
+  .anno span{position:absolute;right:1px;top:1px;font:8.5px/1 "Cascadia Mono",Consolas,monospace;color:var(--red);letter-spacing:.02em;white-space:nowrap;background:#fffdf6;padding:2px 2px}
+  .scan{position:absolute;left:0;right:0;height:1px;background:var(--red);box-shadow:0 0 7px rgba(198,64,42,.5);opacity:0}
+  .verdict{margin-top:9px;display:flex;align-items:center;gap:7px;font:9.5px/1.4 "Noto Sans SC",sans-serif;color:var(--ink-2)}
+  .verdict i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);flex:none}
+  .verdict b{font-weight:600}
+
+  /* 06 */
+  .film{position:relative;height:140px;background:#1b1712;color:#f2ecde;overflow:hidden}
+  .film::before,.film::after{content:"";position:absolute;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,transparent 0 7px,#fbf7ed 7px 12px);opacity:.55;z-index:2}
+  .film::before{top:0}.film::after{bottom:0}
+  .film .inner{position:absolute;inset:6px;border:1px solid rgba(242,236,222,.18);display:grid;place-items:center}
+  .film .play{width:34px;height:34px;border:1px solid rgba(242,236,222,.7);border-radius:50%;display:grid;place-items:center;margin-bottom:24px}
+  .film .play svg{display:block}
+  .film .tc{position:absolute;right:7px;bottom:10px;font:8.5px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.06em;color:#cfc6b4;z-index:3}
+  .film .lab{position:absolute;left:7px;bottom:10px;font:8px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.1em;color:#8e8675;z-index:3}
+  .film .mini{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);opacity:.55}
+  .fileName{margin-top:9px;font:9.5px/1.4 "Cascadia Mono",Consolas,monospace;color:var(--ink-2)}
+  .fileMeta{margin-top:3px;font:8.5px/1.4 "Cascadia Mono",Consolas,monospace;color:var(--ink-3);letter-spacing:.03em}
+  .seal{position:absolute;right:-8px;top:-10px;width:46px;height:46px;background:var(--red);color:#fbf7ed;display:grid;place-items:center;font-family:"Noto Serif SC","SimSun",serif;font-size:12px;font-weight:600;letter-spacing:.12em;transform:rotate(-7deg);box-shadow:0 0 0 2px var(--card) inset;opacity:0}
+
+  /* ── wires ────────────────────────────────────────────── */
+  #wires{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;overflow:visible}
+  .stem{stroke:var(--line);stroke-width:1;fill:none}
+  .stem.on{stroke:var(--red)}
+  .junc{fill:var(--paper);stroke:var(--ink);stroke-width:1.2}
+  .junc.on{fill:var(--red);stroke:var(--red)}
+  .junc.done{fill:var(--ink);stroke:var(--ink)}
+  .busBase{stroke:rgba(26,22,16,.26);stroke-width:1.2;fill:none}
+  .busFlow{stroke:var(--red);stroke-width:1.6;fill:none;opacity:.62}
+  .busGlow{stroke:var(--red);stroke-width:4;fill:none;opacity:0;filter:blur(2px)}
+  .chev{stroke:rgba(26,22,16,.34);stroke-width:1.2;fill:none}
+  .loopBase{stroke:rgba(198,64,42,.22);stroke-width:1.1;fill:none;stroke-dasharray:3 7}
+  .loopActive{stroke:var(--red);stroke-width:1.5;fill:none;opacity:0}
+  .loopGlow{stroke:var(--red);stroke-width:5;fill:none;opacity:0;filter:blur(3px)}
+  .loopTag{font:10.5px/1 "Noto Sans SC",sans-serif;letter-spacing:.06em}
+  .packet{filter:drop-shadow(0 0 5px rgba(198,64,42,.55))}
+  .packet.green{filter:drop-shadow(0 0 6px rgba(30,113,80,.55))}
+
+  /* ── footer ───────────────────────────────────────────── */
+  .footer{position:absolute;left:80px;right:80px;bottom:34px;display:flex;align-items:flex-end;justify-content:space-between;font:9.5px/1.4 "Cascadia Mono",Consolas,monospace;letter-spacing:.09em;color:var(--ink-3)}
+  .footer .left b{font-weight:400;color:var(--ink-2)}
+  .footer .right{text-align:right;opacity:.75}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="paper"></div>
+  <div class="grid"></div>
+  <div class="reg tl"></div><div class="reg tr"></div><div class="reg bl"></div><div class="reg br"></div>
+
+  <header class="mast">
+    <div class="markline">
+      <span class="sq"></span>
+      <span>HUASHU / FLOW DIAGRAM</span>
+      <span class="sep"></span>
+      <span>NO. 06 — 2026</span>
+    </div>
+    <div class="eyebrow" id="eyebrow">一句话，要经过多少道手，才变成能交付的东西</div>
+    <h1>
+      <span class="line"><span id="h1a">从一句话，</span></span>
+      <span class="line"><span id="h1b">到一个成品。</span></span>
+    </h1>
+    <p class="sub" id="sub">Claude Code 调度 skill，<b>DeepSeek V4.1 Flash</b> 写代码，<br>无头浏览器替人截图验货。不满意，就回炉。</p>
+  </header>
+
+  <section class="phase">
+    <div class="phaseTop"><b>当前阶段 / PHASE</b><span id="pStep">00 / 07</span></div>
+    <div class="phaseName" id="pName">待机</div>
+    <div class="phaseDesc" id="pDesc">一句话还没说出口</div>
+    <div class="steps" id="steps"></div>
+  </section>
+
+  <svg id="wires" viewBox="0 0 1920 1080" aria-hidden="true">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="#c6402a"></path>
+      </marker>
+    </defs>
+    <g id="stems"></g>
+    <path class="busBase" d="M200 845 H1720"></path>
+    <line class="busGlow" id="busGlow" x1="200" y1="845" x2="200" y2="845"></line>
+    <path class="busFlow" id="busFlow" d="M200 845 H1720"></path>
+    <g class="chev">
+      <path d="M678 839 l7 6 l-7 6"></path>
+      <path d="M1068 839 l7 6 l-7 6"></path>
+      <path d="M1458 839 l7 6 l-7 6"></path>
+    </g>
+    <path class="loopBase" d="M1416 845 C1416 910 1376 950 1304 950 L1224 950 C1152 950 1112 910 1112 845"></path>
+    <path class="loopGlow" id="loopGlow" d="M1416 845 C1416 910 1376 950 1304 950 L1224 950 C1152 950 1112 910 1112 845"></path>
+    <path class="loopActive" id="loopActive" d="M1416 845 C1416 910 1376 950 1304 950 L1224 950 C1152 950 1112 910 1112 845"></path>
+    <path id="loopArrow" d="M1105 858 L1119 858 L1112 846 Z" fill="#c6402a" opacity="0"></path>
+    <circle class="junc" id="busEnd" cx="1720" cy="845" r="3.4"></circle>
+    <g id="packets"></g>
+    <g id="drift"></g>
+    <g id="loopTag">
+      <rect x="1186" y="969" width="156" height="27" fill="#f2ecde" stroke="rgba(198,64,42,.45)" stroke-width="1"></rect>
+      <text x="1200" y="987" fill="#c6402a" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="10.5" letter-spacing="0.5">不满意 → 回炉 ×1</text>
+      <text x="1244" y="987" fill="#8a816e" font-family="Cascadia Mono,Consolas,monospace" font-size="8"> </text>
+    </g>
+  </svg>
+
+  <article class="card" id="c1">
+    <div class="idxrow"><span><span class="n">01</span> / input</span><span class="dot"></span></div>
+    <h2>一句话</h2>
+    <div class="role">人类 / 提出要求</div>
+    <div class="body">
+      <div class="quote">
+        <span class="qm">“</span>
+        <p>把这张架构图<br>做成会动的。</p>
+      </div>
+      <div class="wave" id="wave"></div>
+      <div class="waveMeta">VOICE · 3s</div>
+    </div>
+  </article>
+
+  <article class="card" id="c2">
+    <div class="idxrow"><span><span class="n">02</span> / harness</span><span class="dot"></span></div>
+    <h2>Claude Code</h2>
+    <div class="role">编排 / 路由 / 判断</div>
+    <div class="body">
+      <div class="term">
+        <div class="tbar"><i></i><i></i><i></i><span>claude</span></div>
+        <div class="ln p" id="tl0">$ claude</div>
+        <div class="ln" id="tl1">&gt; 读需求 / 拆任务</div>
+        <div class="ln" id="tl2">&gt; 选 skill</div>
+        <div class="ln" id="tl3">&gt; 起浏览器</div>
+        <div class="ln" id="tl4">&gt; 验画面</div>
+        <div class="ln ok" id="tl5">ready<span class="cursor" id="cur"></span></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" id="c3">
+    <div class="idxrow"><span><span class="n">03</span> / skills</span><span class="dot"></span></div>
+    <h2>装载手艺</h2>
+    <div class="role">huashu-* / 按需加载</div>
+    <div class="body">
+      <div class="chips">
+        <div class="chip" data-i="0"><span class="g">d</span><span class="txt"><span class="nm">huashu-design</span><span class="sub2">版式 · 配色</span></span></div>
+        <div class="chip" data-i="1"><span class="g">m</span><span class="txt"><span class="nm">huashu-motion</span><span class="sub2">时间轴 · 转场</span></span></div>
+        <div class="chip" data-i="2"><span class="g">3</span><span class="txt"><span class="nm">huashu-3djs</span><span class="sub2">三维 · 材质</span></span></div>
+        <div class="chip" data-i="3"><span class="g">f</span><span class="txt"><span class="nm">huashu-flow-diagram</span><span class="sub2">流程 · 连线</span></span></div>
+      </div>
+      <div class="skillNote" id="skillNote">MOUNTING 0 / 4</div>
+    </div>
+  </article>
+
+  <article class="card" id="c4">
+    <div class="idxrow"><span><span class="n">04</span> / model</span><span class="dot"></span></div>
+    <h2>DeepSeek</h2>
+    <div class="role">V4.1 Flash / 写代码</div>
+    <div class="body">
+      <div class="coreWrap">
+        <svg width="150" height="150" viewBox="0 0 158 158">
+          <circle cx="79" cy="79" r="73" fill="none" stroke="rgba(26,22,16,.16)" stroke-width="1" stroke-dasharray="1 5" id="ringA"></circle>
+          <circle cx="79" cy="79" r="64" fill="none" stroke="rgba(26,22,16,.22)" stroke-width="1" id="ringB" stroke-dasharray="3 4"></circle>
+          <circle cx="79" cy="79" r="52" fill="none" stroke="rgba(198,64,42,.2)" stroke-width="1"></circle>
+          <circle cx="79" cy="79" r="52" fill="none" stroke="#c6402a" stroke-width="2.4" id="arc" transform="rotate(-90 79 79)"></circle>
+          <circle cx="79" cy="79" r="40" fill="#1b1712"></circle>
+          <text x="79" y="77" text-anchor="middle" fill="#f2ecde" font-family="Noto Serif SC,SimSun,serif" font-size="23" font-weight="600">V4.1</text>
+          <text x="79" y="92" text-anchor="middle" fill="#a79c86" font-family="Cascadia Mono,Consolas,monospace" font-size="7.5" letter-spacing="2.2">FLASH</text>
+          <circle cx="79" cy="6" r="2.4" fill="#c6402a" id="orb1"></circle>
+          <circle cx="79" cy="6" r="1.8" fill="#1b1712" id="orb2"></circle>
+        </svg>
+      </div>
+      <div class="status"><i id="coreDot"></i><span id="coreStatus">待命</span></div>
+      <div class="codeTicker">
+        <div id="cl0">&lt;div class="flow"&gt;</div>
+        <div id="cl1">render(t) // 30fps</div>
+        <div id="cl2">--paper: #f2ecde;</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="card" id="c5">
+    <div class="idxrow"><span><span class="n">05</span> / check</span><span class="dot"></span></div>
+    <h2>无头浏览器</h2>
+    <div class="role">截图 / 比对 / 判卷</div>
+    <div class="body">
+      <div class="browser">
+        <div class="bTop"><i></i><i></i><i></i><span class="url">localhost:4173</span></div>
+        <div class="page">
+          <div class="pHl" id="pHl1"></div>
+          <div class="pHl two" id="pHl2"></div>
+          <div class="pSub" id="pSub1"></div>
+          <div class="pSub s2" id="pSub2"></div>
+          <div class="pImg"></div>
+          <div class="pCols"><i></i><i></i><i></i></div>
+          <div class="anno" id="anno"><span id="annoLabel">标题压字</span></div>
+          <div class="scan" id="scan"></div>
+        </div>
+      </div>
+      <div class="verdict"><i id="vDot"></i><span id="vText">等待截图</span></div>
+    </div>
+  </article>
+
+  <article class="card" id="c6">
+    <div class="idxrow"><span><span class="n">06</span> / deliver</span><span class="dot"></span></div>
+    <h2>交付</h2>
+    <div class="role">一个 MP4 / 15 秒内</div>
+    <div class="body">
+      <div class="film" id="film">
+        <div class="inner">
+          <div class="play" id="play">
+            <svg width="12" height="14" viewBox="0 0 12 14"><path d="M1 1 L11 7 L1 13 Z" fill="#f2ecde"></path></svg>
+          </div>
+        </div>
+        <svg class="mini" width="176" height="46" viewBox="0 0 176 46">
+          <path d="M8 18 H168" stroke="rgba(242,236,222,.3)" stroke-width="1"></path>
+          <path d="M140 18 C140 34 132 39 120 39 L80 39 C68 39 60 34 60 18" stroke="rgba(198,64,42,.65)" stroke-width="1" fill="none" stroke-dasharray="2 3"></path>
+          <g fill="#f2ecde">
+            <circle cx="8" cy="18" r="2"></circle><circle cx="40" cy="18" r="2"></circle>
+            <circle cx="72" cy="18" r="2"></circle><circle cx="104" cy="18" r="2"></circle>
+            <circle cx="136" cy="18" r="2"></circle><circle cx="168" cy="18" r="2"></circle>
+          </g>
+          <circle cx="136" cy="18" r="4" fill="none" stroke="#c6402a" stroke-width="1"></circle>
+        </svg>
+        <div class="lab">OUT</div>
+        <div class="tc">00:14</div>
+      </div>
+      <div class="fileName">architecture-flow.mp4</div>
+      <div class="fileMeta">1920×1080 · 30fps · H.264</div>
+      <div class="seal" id="seal">已交付</div>
+    </div>
+  </article>
+
+  <footer class="footer">
+    <div class="left"><b>huashu-flow-diagram</b> / 6 stations, 1 loop</div>
+    <div class="right">Created by Huashu-Design</div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const DURATION = 14;
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
+  const clamp01 = v => Math.max(0, Math.min(1, v));
+  const seg = (t,a,b) => clamp01((t-a)/(b-a));
+  const eo = p => 1 - Math.pow(1-p, 3);
+  const eio = p => p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p+2, 3)/2;
+  const mix = (a,b,p) => a.map((v,i) => Math.round(v + (b[i]-v)*p));
+  const rgb = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+
+  const PAPER = [251,247,237], INK = [26,22,16], INK2 = [85,77,61], CREAM = [246,239,225], DIM = [138,129,110];
+  const RED = [198,64,42], GREEN = [30,113,80];
+
+  const stage = $('#stage');
+  function fit(){
+    const s = Math.min(window.innerWidth/1920, window.innerHeight/1080);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  }
+  fit();
+  window.addEventListener('resize', fit);
+
+  /* ── static build ─────────────────────────────────────── */
+  const stepWrap = $('#steps');
+  for (let i=0;i<7;i++){
+    if (i) { const b=document.createElement('span'); b.className='stepbar'; stepWrap.appendChild(b); }
+    const d=document.createElement('span'); d.className='step'; stepWrap.appendChild(d);
+  }
+  const steps = $$('.step');
+
+  const wave = $('#wave');
+  for (let i=0;i<24;i++) wave.appendChild(document.createElement('i'));
+  const bars = $$('#wave i');
+
+  const stemWrap = $('#stems');
+  const centers = [200,504,808,1112,1416,1720];
+  const stems = centers.map(x => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x); line.setAttribute('y1',805);
+    line.setAttribute('x2',x); line.setAttribute('y2',845);
+    line.setAttribute('class','stem');
+    stemWrap.appendChild(line);
+    const j = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    j.setAttribute('cx',x); j.setAttribute('cy',845); j.setAttribute('r',3.4);
+    j.setAttribute('class','junc');
+    stemWrap.appendChild(j);
+    return {line,j};
+  });
+
+  const packetWrap = $('#packets');
+  function mkCircle(cls){
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('r',0); c.setAttribute('fill','#c6402a'); c.setAttribute('class',cls);
+    packetWrap.appendChild(c); return c;
+  }
+  const busPackets = [
+    {from:200, to:504,  t0:1.72, t1:2.20, color:'#c6402a'},
+    {from:504, to:808,  t0:3.02, t1:3.50, color:'#c6402a'},
+    {from:808, to:1112, t0:4.34, t1:4.80, color:'#c6402a'},
+    {from:1112,to:1416, t0:6.92, t1:7.40, color:'#c6402a'},
+    {from:1416,to:1720, t0:12.30,t1:12.72,color:'#1e7150'}
+  ];
+  busPackets.forEach(p => { p.set = {main:mkCircle('packet'), t1:mkCircle('packet'), t2:mkCircle('packet')}; });
+  const loopPackets = [
+    {t0:9.70, t1:10.95, set:{main:mkCircle('packet'), t1:mkCircle('packet'), t2:mkCircle('packet')}}
+  ];
+  const drift = [];
+  for (let i=0;i<10;i++){
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cy',845); c.setAttribute('r',2.2); c.setAttribute('fill','#c6402a');
+    c.setAttribute('opacity',0); $('#drift').appendChild(c); drift.push(c);
+  }
+  const loopDrift = [];
+  for (let i=0;i<6;i++){
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('r',2); c.setAttribute('fill','#c6402a');
+    c.setAttribute('opacity',0); $('#drift').appendChild(c); loopDrift.push(c);
+  }
+
+  const PHASES = [
+    {t:0.00, step:0, name:'待机',       desc:'一句话还没说出口'},
+    {t:0.85, step:1, name:'接收指令',   desc:'一句话进来，harness 开始读'},
+    {t:2.20, step:2, name:'调用 harness', desc:'Claude Code 拆任务、定路线'},
+    {t:3.50, step:3, name:'装载 skill', desc:'huashu-design / motion / 3djs 各就各位'},
+    {t:4.80, step:4, name:'生成代码',   desc:'DeepSeek V4.1 Flash 落笔'},
+    {t:7.40, step:5, name:'截图自检',   desc:'无头浏览器：截图、比对、判卷'},
+    {t:9.70, step:6, name:'回炉重写',   desc:'不满意，带着问题回到模型'},
+    {t:11.50,step:5, name:'复检',       desc:'第二版截图，这次放行'},
+    {t:12.60,step:7, name:'交付',       desc:'architecture-flow.mp4 · 00:14'}
+  ];
+
+  /* ── cards ────────────────────────────────────────────── */
+  const cards = [
+    {el:$('#c1'), x:200,  starts:[0.9], ends:[2.2]},
+    {el:$('#c2'), x:504,  starts:[2.2], ends:[3.5]},
+    {el:$('#c3'), x:808,  starts:[3.5], ends:[4.8]},
+    {el:$('#c4'), x:1112, starts:[4.8,10.95], ends:[7.4,11.55]},
+    {el:$('#c5'), x:1296, starts:[7.4,11.55], ends:[9.7,12.6]},
+    {el:$('#c6'), x:1720, starts:[12.6], ends:[99]}
+  ];
+  const revealAt = i => 0.5 + i*0.1;
+
+  const chips = $$('.chip');
+  const tl = [$('#tl0'),$('#tl1'),$('#tl2'),$('#tl3'),$('#tl4'),$('#tl5')];
+  const curEl = $('#cur');
+  const tlText = ['$ claude','> 读需求 / 拆任务','> 选 skill','> 起浏览器','> 验画面','ready'];
+  const tlOff = []; let ttotal = 0;
+  tlText.forEach(s => { tlOff.push(ttotal); ttotal += s.length; });
+
+  const ringA = $('#ringA'), ringB = $('#ringB'), arc = $('#arc'), orb1 = $('#orb1'), orb2 = $('#orb2');
+  const C = 2*Math.PI*52;
+  const anno = $('#anno'), annoLabel = $('#annoLabel'), scan = $('#scan');
+  const vDot = $('#vDot'), vText = $('#vText');
+  const film = $('#film'), seal = $('#seal'), play = $('#play');
+  const busFlow = $('#busFlow'), busGlow = $('#busGlow');
+  const loopActive = $('#loopActive'), loopGlow = $('#loopGlow');
+  const loopPath = $('.loopBase');
+  const loopLen = loopPath.getTotalLength();
+  const busEnd = $('#busEnd');
+  const loopTag = $('#loopTag');
+  const loopArrow = $('#loopArrow');
+
+  const pName = $('#pName'), pDesc = $('#pDesc'), pStep = $('#pStep');
+  let lastPhase = null;
+
+  /* ── render ───────────────────────────────────────────── */
+  function render(t){
+    /* masthead */
+    const pT = eo(seg(t,0,0.62));
+    const h1 = $('h1');
+    h1.style.opacity = 0.9 + 0.1*pT;
+    h1.style.transform = `translateY(${(1-pT)*7}px)`;
+    $('#eyebrow').style.opacity = 0.55 + 0.45*eo(seg(t,0,0.6));
+    const ps = eo(seg(t,0,0.9));
+    $('#sub').style.opacity = 0.7 + 0.3*ps;
+    $('#sub').style.transform = `translateY(${(1-ps)*6}px)`;
+
+    /* phase board */
+    let ph = PHASES[0];
+    for (const p of PHASES) if (t >= p.t) ph = p;
+    if (ph !== lastPhase){
+      pName.textContent = ph.name;
+      pDesc.textContent = ph.desc;
+      pStep.textContent = String(ph.step).padStart(2,'0') + ' / 07';
+      lastPhase = ph;
+    }
+    const pStart = ph.t === 0 ? 0 : ph.t;
+    const inpRaw = eo(seg(t, pStart, pStart+0.34));
+    const inp = ph.t === 0 ? 0.55 + 0.45*inpRaw : inpRaw;
+    pName.style.opacity = inp;
+    pName.style.transform = `translateY(${(1-inp)*16}px)`;
+    pDesc.style.opacity = 0.25 + 0.75*eo(seg(t, ph.t+0.06, ph.t+0.42));
+    pDesc.style.transform = `translateY(${(1-inp)*8}px)`;
+    steps.forEach((s,i) => {
+      s.classList.toggle('on', i+1 === ph.step);
+      s.classList.toggle('done', i+1 < ph.step);
+    });
+    $$('.stepbar').forEach((b,i) => b.classList.toggle('done', i+1 < ph.step));
+
+    /* cards */
+    cards.forEach((c,i) => {
+      const rv = eo(seg(t, revealAt(i), revealAt(i)+0.6));
+      let active = false, done = false, lit = 0;
+      c.starts.forEach((s,k) => {
+        const e = c.ends[k];
+        if (t >= s && t < e) active = true;
+        if (t >= e) done = true;
+        lit = Math.max(lit, eo(seg(t, s, s+0.28)));
+      });
+      c.el.style.opacity = rv * (0.6 + 0.4*lit);
+      c.el.style.transform = `translateY(${(1-rv)*22}px)`;
+      c.el.classList.toggle('active', active);
+      c.el.classList.toggle('done', done && !active);
+      if (active){
+        const s = c.starts[c.starts.length-1];
+        const pr = seg(t, s, s+0.55);
+        c.el.style.boxShadow = pr < 1 ? `0 0 0 ${(1-eo(pr))*9}px rgba(198,64,42,${0.16*(1-pr)})` : '';
+      } else {
+        c.el.style.boxShadow = '';
+      }
+      if (stems[i]){
+        stems[i].line.classList.toggle('on', active);
+        stems[i].j.classList.toggle('on', active);
+        stems[i].j.classList.toggle('done', done && !active);
+      }
+    });
+
+    /* c1 voice */
+    const speak = seg(t,0.95,2.35);
+    bars.forEach((b,i) => {
+      const env = Math.sin(Math.PI*speak);
+      const h = 4 + env*(9 + 9*Math.abs(Math.sin(t*7.4 + i*0.62)) + 5*Math.abs(Math.sin(t*13.1 + i*0.31)));
+      b.style.height = h.toFixed(1)+'px';
+    });
+
+    /* c2 terminal */
+    const tp = seg(t,1.55,3.38)*ttotal;
+    tl.forEach((el,i) => {
+      const n = Math.max(0, Math.min(tlText[i].length, tp - tlOff[i]));
+      el.textContent = tlText[i].slice(0,n);
+    });
+    if (!tl[5].contains(curEl)) tl[5].appendChild(curEl);
+    curEl.style.opacity = (Math.floor(t*2.6)%2===0) ? 1 : 0.12;
+
+    /* c3 chips */
+    let mounted = 0;
+    chips.forEach((ch,i) => {
+      const p = eo(seg(t, 3.56 + i*0.21, 3.56 + i*0.21 + 0.32));
+      if (p > 0.55) mounted++;
+      const bg = mix(PAPER, INK, p);
+      const fg = mix(INK2, CREAM, p);
+      const sub = mix(DIM, [196,187,166], p);
+      ch.style.background = rgb(bg);
+      ch.style.color = rgb(fg);
+      ch.style.borderColor = `rgba(26,22,16,${0.34 + 0.4*p})`;
+      ch.style.transform = `translateX(${(1-p)*12}px)`;
+      ch.querySelector('.sub2').style.color = rgb(sub);
+      ch.querySelector('.g').style.opacity = 0.55 + 0.45*p;
+    });
+    const note = mounted < 4 ? `MOUNTING ${mounted} / 4` : '4 SKILLS MOUNTED';
+    if ($('#skillNote').textContent !== note) $('#skillNote').textContent = note;
+
+    /* c4 model */
+    const spin = t*26 + Math.max(0,t-4.8)*16;
+    ringA.setAttribute('transform', `rotate(${spin} 79 79)`);
+    ringB.setAttribute('transform', `rotate(${-spin*0.7} 79 79)`);
+    const bp = seg(t,4.8,6.9);
+    arc.setAttribute('stroke-dasharray', `${C*bp} ${C}`);
+    arc.setAttribute('opacity', t < 4.8 ? 0.25 : 1);
+    const orbA = spin*Math.PI/180;
+    orb1.setAttribute('cx', 79 + Math.cos(orbA)*73);
+    orb1.setAttribute('cy', 79 + Math.sin(orbA)*73);
+    orb2.setAttribute('cx', 79 + Math.cos(-orbA*0.8+2.1)*64);
+    orb2.setAttribute('cy', 79 + Math.sin(-orbA*0.8+2.1)*64);
+    let status = '待命', dotOn = false;
+    if (t>=4.8 && t<7.4){ status='writing v1 —'; dotOn=true; }
+    else if (t>=7.4 && t<9.7){ status='rendering…'; dotOn=true; }
+    else if (t>=9.7 && t<10.95){ status='queued for retry'; dotOn=false; }
+    else if (t>=10.95 && t<11.55){ status='rewriting v2 —'; dotOn=true; }
+    else if (t>=11.55){ status='shipped'; dotOn=true; }
+    $('#coreStatus').textContent = status;
+    $('#coreDot').style.background = t>=11.55 ? 'var(--green)' : (dotOn ? 'var(--red)' : 'var(--ink-3)');
+    const cl = [$('#cl0'),$('#cl1'),$('#cl2')];
+    cl.forEach((el,i) => {
+      const p = eo(seg(t, 5.0 + i*0.42, 5.0 + i*0.42 + 0.32));
+      el.style.opacity = 0.25 + 0.75*p;
+      el.style.transform = `translateY(${(1-p)*5}px)`;
+    });
+
+    /* c5 browser */
+    const v2 = t >= 11.45;
+    const fix = eo(seg(t, 11.45, 11.85));
+    const pageParts = [['#pHl1',0],['#pHl2',0.04],['#pSub1',0.08],['#pSub2',0.12],['.pImg',0],['.pCols',0.16]];
+    pageParts.forEach(([sel,d]) => {
+      const el = $(sel);
+      el.style.opacity = 0.1 + 0.9*eo(seg(t, 7.45+d, 7.7+d));
+    });
+    $('#pHl1').style.top = '0px';
+    $('#pHl2').style.marginTop = `${2 + 4*fix}px`;
+    $('#pSub1').style.marginTop = `${3 + 6*fix}px`;
+    $('#pSub2').style.marginTop = `${3 + 2*fix}px`;
+    anno.style.opacity = eo(seg(t, 8.52, 8.78));
+    anno.style.borderColor = v2 ? 'var(--green)' : 'var(--red)';
+    annoLabel.textContent = v2 ? '行距已修' : '标题压字';
+    annoLabel.style.color = v2 ? 'var(--green)' : 'var(--red)';
+    anno.style.height = `${24 + 5*fix}px`;
+    anno.style.width = '132px';
+    let shake = 0;
+    if (t>8.75 && t<9.15) shake = Math.sin((t-8.75)*70)*2.4*(1-seg(t,8.75,9.15));
+    anno.style.transform = `translateX(${shake}px)`;
+
+    let scanP = -1;
+    if (t>=8.0 && t<=8.55) scanP = seg(t,8.0,8.55);
+    if (t>=11.7 && t<=12.15) scanP = seg(t,11.7,12.15);
+    if (scanP >= 0){
+      scan.style.opacity = 0.9;
+      scan.style.top = `${18 + scanP*100}px`;
+    } else scan.style.opacity = 0;
+
+    let vt = '等待截图', vc = 'var(--ink-3)';
+    if (t>=8.55 && t<11.45){ vt='未通过：标题压字，回炉'; vc='var(--red)'; }
+    else if (t>=11.45 && t<12.55){ vt='通过：行距已修'; vc='var(--green)'; }
+    else if (t>=12.55){ vt='通过 · 已交付'; vc='var(--green)'; }
+    vText.textContent = vt; vDot.style.background = vc;
+
+    /* c6 deliver */
+    const dp = eo(seg(t,12.6,13.15));
+    film.style.transform = `translateY(${(1-dp)*22}px)`;
+    film.style.opacity = 0.15 + 0.85*dp;
+    const sp = eo(seg(t,12.78,13.18));
+    seal.style.opacity = sp;
+    seal.style.transform = `rotate(-7deg) scale(${1.55 - 0.55*sp})`;
+    play.style.opacity = 0.75 + 0.25*Math.sin(t*2.6);
+
+    /* bus + loop */
+    busFlow.setAttribute('stroke-dashoffset', `${-t*54}`);
+    const busOn = t>=0.9;
+    busFlow.style.opacity = busOn ? 0.55 : 0.18;
+    busEnd.classList.toggle('on', t>=12.6);
+    busEnd.classList.toggle('done', t<12.6);
+
+    const lp = seg(t,9.55,10.95);
+    loopActive.style.strokeDasharray = `${loopLen} ${loopLen}`;
+    loopActive.style.strokeDashoffset = `${loopLen*(1-lp)}`;
+    loopActive.style.opacity = t>=9.55 ? 0.85 : 0;
+    loopGlow.style.strokeDasharray = `${loopLen} ${loopLen}`;
+    loopGlow.style.strokeDashoffset = `${loopLen*(1-lp)}`;
+    loopGlow.style.opacity = (t>=9.55 && t<10.95) ? 0.45 : 0;
+    loopPath.style.opacity = t>=9.55 ? 0.35 : 0.25;
+
+    /* packets */
+    busPackets.forEach(p => drawBusPacket(p, t));
+    loopPackets.forEach(p => drawLoopPacket(p, t));
+
+    /* constant drift on the bus + return loop */
+    drift.forEach((c,i) => {
+      c.setAttribute('cx', 200 + ((t*85 + i*152) % 1520));
+      c.setAttribute('opacity', t>0.9 ? 0.42 : 0);
+    });
+    loopDrift.forEach((c,i) => {
+      const d = (t*55 + i*(loopLen/6)) % loopLen;
+      const q = loopPath.getPointAtLength(d);
+      c.setAttribute('cx', q.x); c.setAttribute('cy', q.y);
+      c.setAttribute('opacity', t>9.2 ? 0.35 : 0);
+    });
+    loopArrow.setAttribute('opacity', t>=10.8 ? 0.95 : 0);
+    loopTag.setAttribute('opacity', t>=9.55 ? 1 : (t>1.2 ? 0.55 : 0));
+
+    /* bus glow travel */
+    let glow = busPackets.find(p => t>=p.t0 && t<=p.t1);
+    if (glow){
+      const p = eio(seg(t,glow.t0,glow.t1));
+      const x = glow.from + (glow.to-glow.from)*p;
+      busGlow.setAttribute('x1', glow.from);
+      busGlow.setAttribute('x2', x);
+      busGlow.style.stroke = glow.color;
+      busGlow.style.opacity = 0.22;
+    } else busGlow.style.opacity = 0;
+  }
+
+  function drawBusPacket(pkt, t){
+    const set = pkt.set;
+    const on = t>=pkt.t0 && t<=pkt.t1;
+    [set.main,set.t1,set.t2].forEach(c => c.setAttribute('fill', pkt.color));
+    if (!on){
+      set.main.setAttribute('r',0); set.t1.setAttribute('r',0); set.t2.setAttribute('r',0);
+      return;
+    }
+    const p = eio(seg(t,pkt.t0,pkt.t1));
+    const x = pkt.from + (pkt.to-pkt.from)*p;
+    const dir = Math.sign(pkt.to-pkt.from);
+    const fade = Math.min(1, seg(t,pkt.t0,pkt.t0+0.12)) * Math.min(1, seg(pkt.t1,t,pkt.t1-0.12));
+    set.main.setAttribute('cx',x); set.main.setAttribute('cy',845); set.main.setAttribute('r',7); set.main.setAttribute('opacity',fade);
+    set.t1.setAttribute('cx',x - 9*dir); set.t1.setAttribute('cy',845); set.t1.setAttribute('r',4.4); set.t1.setAttribute('opacity',fade*0.45);
+    set.t2.setAttribute('cx',x - 16*dir); set.t2.setAttribute('cy',845); set.t2.setAttribute('r',2.7); set.t2.setAttribute('opacity',fade*0.2);
+  }
+  function drawLoopPacket(pkt, t){
+    const set = pkt.set;
+    const on = t>=pkt.t0 && t<=pkt.t1;
+    if (!on){
+      set.main.setAttribute('r',0); set.t1.setAttribute('r',0); set.t2.setAttribute('r',0);
+      return;
+    }
+    const p = eio(seg(t,pkt.t0,pkt.t1));
+    const d = loopLen*p;
+    const a = loopPath.getPointAtLength(d);
+    const b1 = loopPath.getPointAtLength(Math.max(0,d-9));
+    const b2 = loopPath.getPointAtLength(Math.max(0,d-17));
+    const fade = Math.min(1, seg(t,pkt.t0,pkt.t0+0.12)) * Math.min(1, seg(pkt.t1,t,pkt.t1-0.12));
+    [[set.main,7,1,a],[set.t1,4.4,.45,b1],[set.t2,2.7,.2,b2]].forEach(([c,r,o,q])=>{
+      c.setAttribute('cx',q.x); c.setAttribute('cy',q.y); c.setAttribute('r',r); c.setAttribute('opacity',fade*o);
+      c.setAttribute('fill','#c6402a');
+    });
+  }
+
+  /* ── tick / seek ──────────────────────────────────────── */
+  let time = 0, playing = false, lastTick = null;
+  function tick(now){
+    if (lastTick === null){
+      lastTick = now;
+      window.__ready = true;
+      render(0);
+      requestAnimationFrame(tick);
+      return;
+    }
+    const dt = (now - lastTick)/1000;
+    lastTick = now;
+    if (playing){
+      let next = time + dt;
+      if (next >= DURATION){
+        next = window.__recording ? DURATION - 0.001 : 0;
+        if (!window.__recording) lastPhase = null;
+      }
+      time = next;
+      render(time);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  window.__seek = (t) => {
+    playing = false;
+    lastPhase = null;
+    time = Math.max(0, Math.min(DURATION-0.001, t));
+    render(time);
+  };
+  window.__duration = DURATION;
+
+  document.fonts.ready.then(() => {
+    render(0);
+    playing = true;
+    requestAnimationFrame(tick);
+  });
+})();
+</script>
+</body>
+</html>

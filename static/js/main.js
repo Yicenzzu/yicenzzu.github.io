@@ -195,7 +195,11 @@
       });
 
       $$('img', root).forEach(function (image) {
-        if (!image.closest('.post-hero') && !image.closest('.post-cover')) {
+        if (
+          !image.closest('.post-hero') &&
+          !image.closest('.post-cover') &&
+          !image.closest('.academic-home__portrait-wrap')
+        ) {
           image.loading = 'lazy';
         }
         image.decoding = 'async';
@@ -607,6 +611,8 @@
     void container.offsetWidth;
     container.classList.add('fade-in');
 
+    $('#main-content').classList.toggle('content-col--wide', result.post.wideLayout);
+
     setActiveNav('blog');
     updateBreadcrumb([
       { label: 'Home', url: '#/' },
@@ -614,7 +620,16 @@
       { label: result.post.title }
     ]);
     setPageMeta(result.post.title, result.post.excerpt);
-    renderTOCPanel(result.headings);
+
+    if (result.post.hideToc) {
+      hidePanel();
+    } else {
+      const tocHeadings = result.headings.filter(function (heading) {
+        const element = document.getElementById(heading.id);
+        return element && !element.closest('.academic-project');
+      });
+      renderTOCPanel(tocHeadings);
+    }
   }
 
   /* ------------------------------------------------------------
@@ -749,6 +764,8 @@
 
     closeSidebar();
     closeSearch();
+    closeVideoModal();
+    $('#main-content').classList.remove('content-col--wide');
     showLoading();
 
     try {
@@ -1076,6 +1093,69 @@
   }
 
   /* ------------------------------------------------------------
+     In-page video player
+     ------------------------------------------------------------ */
+
+  function ensureVideoModal() {
+    let modal = $('#video-modal');
+    if (modal) {
+      return modal;
+    }
+
+    modal = document.createElement('dialog');
+    modal.id = 'video-modal';
+    modal.className = 'video-modal';
+    modal.setAttribute('aria-label', 'Video player');
+    modal.innerHTML =
+      '<div class="video-modal__bar">' +
+      '<span data-video-title>Video</span>' +
+      '<button type="button" class="video-modal__close" aria-label="Close video">' +
+      '<i class="fas fa-xmark"></i>' +
+      '</button>' +
+      '</div>' +
+      '<video controls playsinline preload="none"></video>';
+
+    document.body.appendChild(modal);
+
+    modal.querySelector('.video-modal__close').addEventListener('click', closeVideoModal);
+    modal.addEventListener('click', function (event) {
+      if (event.target === modal) {
+        closeVideoModal();
+      }
+    });
+    modal.addEventListener('close', function () {
+      const video = modal.querySelector('video');
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    });
+
+    return modal;
+  }
+
+  function openVideoModal(src, title) {
+    const modal = ensureVideoModal();
+    const video = modal.querySelector('video');
+    modal.querySelector('[data-video-title]').textContent = title || 'Video';
+    video.src = src;
+    if (typeof modal.showModal === 'function') {
+      modal.showModal();
+    } else {
+      modal.setAttribute('open', '');
+    }
+    video.play().catch(function () {
+      /* Autoplay may be blocked; the controls remain usable. */
+    });
+  }
+
+  function closeVideoModal() {
+    const modal = $('#video-modal');
+    if (modal && modal.open) {
+      modal.close();
+    }
+  }
+
+  /* ------------------------------------------------------------
      UI events and scrolling
      ------------------------------------------------------------ */
 
@@ -1138,6 +1218,34 @@
         return;
       }
 
+      const videoButton = event.target.closest('[data-video]');
+      if (videoButton) {
+        openVideoModal(videoButton.dataset.video, videoButton.dataset.videoTitle);
+        return;
+      }
+
+      const promptToggle = event.target.closest('[data-prompt-toggle]');
+      if (promptToggle) {
+        const prompt = document.getElementById(promptToggle.dataset.promptToggle);
+        if (prompt) {
+          const willShow = prompt.hidden;
+          prompt.hidden = !willShow;
+          promptToggle.setAttribute('aria-expanded', String(willShow));
+        }
+        return;
+      }
+
+      const scrollLink = event.target.closest('[data-scroll]');
+      if (scrollLink) {
+        event.preventDefault();
+        const target = document.getElementById(scrollLink.dataset.scroll);
+        if (target) {
+          const top = target.getBoundingClientRect().top + global.scrollY - 84;
+          global.scrollTo({ top: top, behavior: 'smooth' });
+        }
+        return;
+      }
+
       const tocLink = event.target.closest('a.toc-link');
       if (tocLink) {
         event.preventDefault();
@@ -1170,6 +1278,7 @@
         closeSearch();
         closeSidebar();
         closeImageViewer();
+        closeVideoModal();
         $('#mode-menu-list').hidden = true;
       }
 
@@ -1217,7 +1326,7 @@
     } catch (error) {
       showError(error);
       $('#footer-left').innerHTML =
-        '© ' + new Date().getFullYear() + ' ' + escapeHtml('Yicen Liu');
+        '© ' + new Date().getFullYear() + ' ' + escapeHtml('Haotian Li');
       return;
     }
 

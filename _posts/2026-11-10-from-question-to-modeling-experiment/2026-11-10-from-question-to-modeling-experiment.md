@@ -7,7 +7,7 @@ tags:
   - Modeling
   - Scientific computing
 description: Turning an open question into a small, controlled set of model runs.
-cover: static/assets/img/posts/from-question-to-modeling-experiment.jpg
+cover: data/from-question-to-modeling-experiment.jpg
 cover_alt: Aerosol and atmospheric chemistry visualization used as the cover for a modeling experiment note
 ---
 

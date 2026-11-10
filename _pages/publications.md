@@ -39,4 +39,4 @@ Atmospheric aerosol particles are complex mixtures of organic and inorganic comp
   </article>
 </div>
 
-<p class="academic-source-note">Publication details and preview images adapted from <a href="https://yicenl2.github.io/publications/">Yicen Liu’s publications page</a>.</p>
+<p class="academic-source-note">Publication details and preview images adapted from <a href="https://yicenl2.github.io/publications/">the original publications page</a>.</p>

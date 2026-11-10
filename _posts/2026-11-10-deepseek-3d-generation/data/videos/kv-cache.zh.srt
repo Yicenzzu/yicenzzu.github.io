@@ -1,0 +1,72 @@
+1
+00:00:00,050 --> 00:00:02,210
+<font face="Microsoft YaHei" size="46" color="#e8eff2">Agent 干活不是一问一答</font>
+
+2
+00:00:02,350 --> 00:00:04,990
+<font face="Microsoft YaHei" size="46" color="#e8eff2">读文件、改代码、跑测试</font>
+
+3
+00:00:05,040 --> 00:00:07,410
+<font face="Microsoft YaHei" size="46" color="#e8eff2">每一步都带着全部上下文</font>
+
+4
+00:00:07,770 --> 00:00:09,770
+<font face="Microsoft YaHei" size="46" color="#e8eff2">模型要为每个 token</font>
+
+5
+00:00:09,770 --> 00:00:10,540
+<font face="Microsoft YaHei" size="46" color="#e8eff2">存一对 K、V</font>
+
+6
+00:00:11,110 --> 00:00:13,750
+<font face="Microsoft YaHei" size="46" color="#e8eff2">层数乘上长度，缓存越滚越大</font>
+
+7
+00:00:14,340 --> 00:00:16,400
+<font face="Microsoft YaHei" size="46" color="#e8eff2">同一段上下文反复调用</font>
+
+8
+00:00:16,400 --> 00:00:19,150
+<font face="Microsoft YaHei" size="46" color="#e8eff2">计算能省，显存却一直占着</font>
+
+9
+00:00:19,650 --> 00:00:22,810
+<font face="Microsoft YaHei" size="46" color="#e8eff2">所以成本的大头，常常不是算力</font>
+
+10
+00:00:22,810 --> 00:00:25,130
+<font face="Microsoft YaHei" size="46" color="#e8eff2">而是装 KV cache 的显存</font>
+
+11
+00:00:25,490 --> 00:00:28,090
+<font face="Microsoft YaHei" size="46" color="#e8eff2">V4.1 Flash 把缓存压到</font>
+
+12
+00:00:28,090 --> 00:00:29,640
+<font face="Microsoft YaHei" size="46" color="#e8eff2">上一代的四分之一</font>
+
+13
+00:00:29,640 --> 00:00:31,310
+<font face="Microsoft YaHei" size="46" color="#e8eff2">一张卡，四倍会话</font>
+
+14
+00:00:31,680 --> 00:00:34,690
+<font face="Microsoft YaHei" size="46" color="#e8eff2">硬盘上的前缀缓存只剩八分之一</font>
+
+15
+00:00:34,690 --> 00:00:36,920
+<font face="Microsoft YaHei" size="46" color="#e8eff2">八倍历史，冷启动也更快</font>
+
+16
+00:00:37,570 --> 00:00:39,010
+<font face="Microsoft YaHei" size="46" color="#e8eff2">省下的是规模</font>
+
+17
+00:00:39,010 --> 00:00:42,020
+<font face="Microsoft YaHei" size="46" color="#e8eff2">更长记忆、更多并发、更低成本</font>
+
+18
+00:00:42,390 --> 00:00:44,900
+<font face="Microsoft YaHei" size="46" color="#e8eff2">缓存成了能力的地基</font>
+

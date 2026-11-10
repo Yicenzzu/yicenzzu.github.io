@@ -1,19 +1,19 @@
 ---
 title: Home
 bio: |
-  Hi, I’m Yicen (奕岑). I study atmospheric aerosols, heterogeneous chemistry, and the ways aerosol mixing state influences climate and air quality. My work combines particle-resolved modeling, scientific computing, and data analysis.
+  Hi, I’m Haotian (豪天). I work on artificial intelligence, agents, industrial software, industrial defect detection, and large vision models. My work combines agent systems, computer vision, and software engineering for industrial applications.
 
-  I am advised by [Professor Nicole Riemer](https://www.atmos.illinois.edu/directory/profile/riemer) in the Department of Climate, Meteorology & Atmospheric Sciences, with a concentration in Computer Science and Engineering.
+  I am a Ph.D. candidate in Electronic Information at Harbin Institute of Technology, with a concentration in Computer Science and Engineering.
 ---
 
 <section class="academic-interests" aria-label="Research interests">
   <h2>Research interests</h2>
   <ul class="academic-tags">
-    <li>Atmospheric chemistry</li>
-    <li>Aerosol modeling</li>
-    <li>Aerosol-cloud interactions</li>
-    <li>Data science</li>
-    <li>High-performance computing</li>
+    <li>Artificial Intelligence</li>
+    <li>Agents</li>
+    <li>Industrial Software</li>
+    <li>Industrial Defect Detection</li>
+    <li>Large Vision Models</li>
   </ul>
 </section>
 

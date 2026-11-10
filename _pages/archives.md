@@ -1,6 +1,6 @@
 ---
 title: Archives
-description: Skills, experience, and awards.
+description: Skills, experience, awards, and patents.
 ---
 
 <div class="academic-archive">
@@ -16,7 +16,6 @@ description: Skills, experience, and awards.
           <li>C/C++</li>
           <li>C#</li>
           <li>MATLAB</li>
-          <li>Julia</li>
         </ul>
       </div>
       <div class="academic-skill-group">
@@ -37,37 +36,14 @@ description: Skills, experience, and awards.
     <ul class="academic-cv-list">
       <li>
         <div class="academic-cv-row">
-          <div class="academic-cv-date"><span>Jan. - May 2022</span></div>
-          <div class="academic-cv-detail">
-            <h3>Teaching</h3>
-            <p>Radiative Transfer-Remote Sensing (ATMS 304)</p>
-            <ul><li>Spring 2022 List of Teachers Ranked as Excellent by Their Students.</li></ul>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="academic-cv-row">
-          <div class="academic-cv-date"><span>2019 - Present</span></div>
+          <div class="academic-cv-date"><span>2025 - 2026</span></div>
           <div class="academic-cv-detail">
             <h3>Internship</h3>
-            <p>Urban Planning and Design, Kunshan, Jiangsu</p>
+            <p>Materials Research Institute, China State Shipbuilding Corporation (CSSC)</p>
             <ul>
-              <li>Conducted a field survey to point out issues in urban water supply and sewage treatment.</li>
-              <li>Tested water quality of effluents from industries, communities, and retail stores.</li>
-              <li>Collaborated in a technical assistance project to provide suggestions on pipeline network.</li>
-            </ul>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="academic-cv-row">
-          <div class="academic-cv-date"><span>2017 - 2018</span></div>
-          <div class="academic-cv-detail">
-            <h3>Internship</h3>
-            <p>UN Environment - Tongji Institute of Environment for Sustainable Development</p>
-            <ul>
-              <li>Coordinated over 50 student volunteers in environmental activities or seminars.</li>
-              <li>Managed paperwork revision and advertised 2 international environmental-related conferences.</li>
+              <li>Supported material characterization and performance testing for marine structural materials, including metallographic analysis and mechanical property evaluation.</li>
+              <li>Built an image dataset for surface and internal defects and assisted in developing a vision-based inspection workflow for material quality assessment.</li>
+              <li>Processed experimental data with Python and prepared technical reports and progress presentations for the research team.</li>
             </ul>
           </div>
         </div>
@@ -78,13 +54,21 @@ description: Skills, experience, and awards.
   <section class="academic-archive-card" id="awards">
     <h2>Awards</h2>
     <ul class="academic-cv-list">
-      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Oct. 2023</span></div><div class="academic-cv-detail"><h3>Fall 2023 Schlesinger Travel Grant</h3><p class="academic-cv-location">U of I, IL, United States</p></div></div></li>
-      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Aug. 2022</span></div><div class="academic-cv-detail"><h3>40<sup>th</sup> Annual Aerosol Conference Student Travel Grant</h3><p class="academic-cv-location">U of I, IL, United States</p></div></div></li>
-      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Dec. 2021</span></div><div class="academic-cv-detail"><h3>Fall 2021 Conference Presentation Awards</h3><p class="academic-cv-location">U of I, IL, United States</p></div></div></li>
-      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Aug. 2021</span></div><div class="academic-cv-detail"><h3>Outstanding Talk in Air Connect 3-min talk (3MT)</h3><p class="academic-cv-location">U of I, IL, United States</p></div></div></li>
-      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Nov. 2018</span></div><div class="academic-cv-detail"><h3>The Third Prize Scholarship</h3><p class="academic-cv-location">Tongji University, Shanghai, China</p></div></div></li>
-      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Nov. 2018</span></div><div class="academic-cv-detail"><h3>Ke Lan Scholarship for Academic Excellence</h3><p class="academic-cv-location">Tongji University, Shanghai, China</p></div></div></li>
-      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Dec. 2017</span></div><div class="academic-cv-detail"><h3>Scholarship for Social Practice</h3><p class="academic-cv-location">Tongji University, Shanghai, China</p></div></div></li>
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>2025</span></div><div class="academic-cv-detail"><h3>University-Level Outstanding Graduate</h3><p class="academic-cv-location">Beijing Institute of Technology</p></div></div></li>
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>2025</span></div><div class="academic-cv-detail"><h3>Special-Class Scholarship</h3><p class="academic-cv-location">Beijing Institute of Technology</p></div></div></li>
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>2024</span></div><div class="academic-cv-detail"><h3>First-Class Scholarship</h3><p class="academic-cv-location">Beijing Institute of Technology</p></div></div></li>
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>2024</span></div><div class="academic-cv-detail"><h3>Third Prize, 21st Century Cup Student Innovation Competition</h3><p class="academic-cv-location">Beijing Institute of Technology</p></div></div></li>
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>2023</span></div><div class="academic-cv-detail"><h3>Second-Class Scholarship</h3><p class="academic-cv-location">Beijing Institute of Technology</p></div></div></li>
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>2022–2023</span></div><div class="academic-cv-detail"><h3>Outstanding Student</h3><p class="academic-cv-location">Beijing Institute of Technology</p></div></div></li>
+    </ul>
+  </section>
+
+  <section class="academic-archive-card" id="patents">
+    <h2>Patents &amp; Software</h2>
+    <ul class="academic-cv-list">
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Patent</span></div><div class="academic-cv-detail"><h3>Target Damage Detection Method and System Based on Siamese Network</h3><p>Application No. 202410103187.1</p></div></div></li>
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Patent</span></div><div class="academic-cv-detail"><h3>Deep Learning-Based Method and Device for Delamination Defect Detection in Laminated Plates</h3><p>Application No. 2025105421132</p></div></div></li>
+      <li><div class="academic-cv-row"><div class="academic-cv-date"><span>Software</span></div><div class="academic-cv-detail"><h3>Target Damage Effect Detection and Visualization System V1.0</h3><p>Registration No. 2024SR0363143</p></div></div></li>
     </ul>
   </section>
 </div>

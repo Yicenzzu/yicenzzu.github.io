@@ -1,26 +1,22 @@
 /* ============================================================
    blog.js — post index and renderer
    ------------------------------------------------------------
-   This file keeps a plain array of post files instead of using a
-   build step. To publish a new post:
-     1. add the markdown file under _posts/
-     2. append an entry to POSTS below
-   Dates, titles, tags, and descriptions are read from each
-   file's YAML front matter at runtime.
+   Each post lives in its own folder under _posts/:
+     _posts/2026-11-10-my-post/
+       ├── 2026-11-10-my-post.md
+       └── data/                  # cover, images, demos, videos…
+   To publish a new post, append its markdown path to POSTS below.
+   Inside the markdown, reference assets as data/cover.jpg and the
+   renderer will resolve them against that post's data/ folder.
    ============================================================ */
 
 (function (global) {
   'use strict';
 
   const POSTS = [
-    {
-      file: '_posts/2026-11-10-reproducible-data-analysis.md',
-      slug: 'reproducible-data-analysis'
-    },
-    {
-      file: '_posts/2026-11-10-from-question-to-modeling-experiment.md',
-      slug: 'from-question-to-modeling-experiment'
-    }
+    '_posts/2026-11-10-deepseek-3d-generation/2026-11-10-deepseek-3d-generation.md',
+    '_posts/2026-11-10-reproducible-data-analysis/2026-11-10-reproducible-data-analysis.md',
+    '_posts/2026-11-10-from-question-to-modeling-experiment/2026-11-10-from-question-to-modeling-experiment.md'
   ];
 
   const cache = new Map();
@@ -32,6 +28,13 @@
     return global.SiteUtils;
   }
 
+  function resolveDataPath(value, assetBase) {
+    if (typeof value !== 'string' || value.indexOf('data/') !== 0) {
+      return value;
+    }
+    return assetBase + value.slice('data/'.length);
+  }
+
   async function loadPost(entry) {
     if (cache.has(entry.file)) {
       return cache.get(entry.file);
@@ -41,24 +44,34 @@
     const raw = await U.fetchText(entry.file);
     const parsed = U.parseFrontMatter(raw);
     const data = parsed.data || {};
-    const html = U.renderMarkdown(parsed.body || '');
+    const segments = entry.file.split('/');
+    const fileName = segments.pop();
+    const folder = segments.pop() || '';
+    const assetBase = '_posts/' + folder + '/data/';
+    let html = U.renderMarkdown(parsed.body || '');
+    html = html.replace(/(src|href|poster|data-video)="data\//g, '$1="' + assetBase);
     const text = U.plainText(html);
-    const fileName = entry.file.split('/').pop();
     const fallbackSlug = fileName
       .replace(/\.md$/i, '')
       .replace(/^\d{4}-\d{2}-\d{2}-/, '');
     const fileDate = fileName.match(/^(\d{4}-\d{2}-\d{2})/);
-    const coverValue =
+    const rawCover =
       typeof data.cover === 'string'
         ? data.cover
         : typeof data.image === 'string'
           ? data.image
           : null;
+    const coverValue = resolveDataPath(rawCover, assetBase);
 
     const post = Object.assign({}, entry, data, {
       cover: coverValue,
       coverAlt: data.cover_alt || data.image_alt || data.title || '',
-      slug: entry.slug || data.slug || fallbackSlug,
+      hideHeader: data.hide_header === true,
+      hideCover: data.hide_cover === true,
+      hideToc: data.hide_toc === true,
+      hideNav: data.hide_nav === true,
+      wideLayout: data.wide_layout === true,
+      slug: data.slug || fallbackSlug,
       title: data.title || U.titleFromFile(entry.file),
       date: U.toDate(data.date || (fileDate ? fileDate[1] : null)),
       categories: U.toArray(data.categories != null ? data.categories : data.category),
@@ -83,10 +96,11 @@
 
     loadPromise = Promise.all(
       POSTS.map(async function (entry) {
+        const file = typeof entry === 'string' ? entry : entry.file;
         try {
-          return await loadPost(entry);
+          return await loadPost({ file: file });
         } catch (error) {
-          console.error('Unable to load post:', entry.file, error);
+          console.error('Unable to load post:', file, error);
           return null;
         }
       })
@@ -212,7 +226,7 @@
         '</div>'
       : '';
 
-    const cover = post.cover
+    const cover = post.cover && !post.hideCover
       ? '<figure class="post-hero"><img src="' +
         U.escapeHtml(post.cover) +
         '" alt="' +
@@ -220,8 +234,9 @@
         '"></figure>'
       : '';
 
-    const navigation =
-      '<nav class="post-navigation" aria-label="Post navigation">' +
+    const navigation = post.hideNav
+      ? ''
+      : '<nav class="post-navigation" aria-label="Post navigation">' +
       (older
         ? '<a class="post-nav-link post-nav-link--prev" href="#/posts/' +
           encodeURIComponent(older.slug) +
@@ -238,15 +253,21 @@
         : '<span class="post-nav-link is-disabled"></span>') +
       '</nav>';
 
+    const header = post.hideHeader
+      ? ''
+      : '<header class="post-header">' +
+        '<h1 class="post-title">' +
+        U.escapeHtml(post.title) +
+        '</h1>' +
+        metaHtml(post) +
+        tags +
+        '</header>';
+
     container.innerHTML =
-      '<article class="post">' +
-      '<header class="post-header">' +
-      '<h1 class="post-title">' +
-      U.escapeHtml(post.title) +
-      '</h1>' +
-      metaHtml(post) +
-      tags +
-      '</header>' +
+      '<article class="post' +
+      (post.hideHeader ? ' post--bare' : '') +
+      '">' +
+      header +
       cover +
       '<div class="content post-content">' +
       post.html +

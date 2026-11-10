@@ -26,4 +26,4 @@ description: Research themes spanning atmospheric chemistry, particle-resolved m
   </article>
 </div>
 
-<p class="academic-source-note">Research topics and imagery adapted from <a href="https://yicenl2.github.io/projects/">Yicen Liu’s project page</a>.</p>
+<p class="academic-source-note">Research topics and imagery adapted from <a href="https://yicenl2.github.io/projects/">the original project page</a>.</p>

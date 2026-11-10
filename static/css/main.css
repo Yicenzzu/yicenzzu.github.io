@@ -427,7 +427,7 @@ html[data-theme="dark"] #mode-toggle [data-mode-icon="dark"] {
   flex: 1;
   flex-direction: column;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1320px;
   min-height: 100vh;
   margin: 0 auto;
   padding: 0 2rem;
@@ -517,8 +517,12 @@ body.scrolled #topbar-wrapper {
 .content-col {
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 860px;
+  max-width: 900px;
   margin: 0 auto;
+}
+
+.content-col--wide {
+  max-width: 1100px;
 }
 
 .panel-col {
@@ -1541,6 +1545,62 @@ body.sidebar-open {
 
 body.viewer-open {
   overflow: hidden;
+}
+
+/* In-page video player used by the AI showcase post. */
+.video-modal {
+  width: min(960px, 92vw);
+  max-width: 960px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--main-border-color);
+  border-radius: 0.8rem;
+  background: var(--card-bg);
+  color: var(--text-color);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.video-modal::backdrop {
+  background: rgba(10, 12, 16, 0.82);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.video-modal__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--main-border-color);
+  color: var(--text-color);
+  font-size: 0.86rem;
+}
+
+.video-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted-color);
+  cursor: pointer;
+}
+
+.video-modal__close:hover {
+  background: var(--sidebar-hover-bg);
+  color: var(--text-color);
+}
+
+.video-modal video {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  background: #000;
 }
 
 .skip-link {

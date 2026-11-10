@@ -4,17 +4,17 @@
 #  No build step, no Jekyll, no Ruby required.
 # ============================================================
 
-title: Yicen Liu
-tagline: Ph.D. Candidate · Environmental Engineering
+title: Haotian Li
+tagline: Ph.D. Candidate · Electronic Information
 description: >-
-  Academic homepage, publications, research projects, and field notes of Yicen Liu.
+  Academic homepage, publications, research projects, and field notes of Haotian Li.
 url: https://yicenzzu.github.io
 lang: en
 timezone: Asia/Shanghai
 
 # Paths are relative to index.html so the site also works from a
 # GitHub Pages project sub-path.
-avatar: static/assets/img/profile_YL_casual.jpg
+avatar: static/assets/img/avatar_haotian.jpg
 favicon: static/assets/img/favicon.svg
 
 # ------------------------------------------------------------
@@ -22,10 +22,10 @@ favicon: static/assets/img/favicon.svg
 # ------------------------------------------------------------
 hero:
   eyebrow: Academic homepage
-  title: Yicen Liu
-  role: "Ph.D. Candidate in Environmental Engineering<br>University of Illinois Urbana-Champaign"
-  image: static/assets/img/profile_YL_casual.jpg
-  image_alt: Portrait of Yicen Liu
+  title: Haotian Li
+  role: "Ph.D. Candidate in Electronic Information<br>Harbin Institute of Technology"
+  image: static/assets/img/profile_haotian.jpg
+  image_alt: Portrait of Haotian Li
   links:
     - label: Selected publications
       url: "#/publications/"
@@ -72,14 +72,12 @@ social:
     url: https://github.com/Yicenzzu
   - label: Email
     icon: fas fa-envelope
-    url: mailto:yicenl2@illinois.edu
+    url: mailto:yicenzzu@163.com
 
 # ------------------------------------------------------------
 #  Footer
 # ------------------------------------------------------------
 footer:
-  copyright: Yicen Liu
+  copyright: Haotian Li
   license: Some rights reserved.
   license_url: https://creativecommons.org/licenses/by/4.0/
-  credit: Plain HTML, CSS & JavaScript.
-  credit_url: https://github.com/Yicenzzu

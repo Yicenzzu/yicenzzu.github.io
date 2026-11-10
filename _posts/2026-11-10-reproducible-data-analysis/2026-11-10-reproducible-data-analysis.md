@@ -7,7 +7,7 @@ tags:
   - Reproducibility
   - Data analysis
 description: Small habits that keep a data analysis understandable months later.
-cover: static/assets/img/posts/reproducible-data-analysis.jpg
+cover: data/reproducible-data-analysis.jpg
 cover_alt: Scientific visualization used as the cover for a note on reproducible data analysis
 ---
 
