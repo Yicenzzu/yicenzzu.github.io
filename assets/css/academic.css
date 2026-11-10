@@ -75,3 +75,138 @@
   .academic-skill-groups, .academic-awards { grid-template-columns: 1fr; }
   .academic-timeline__item { grid-template-columns: 1fr; gap: 0.45rem; }
 }
+
+/* Archive cards follow the compact CV layout on the reference site. */
+.academic-archive {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.academic-archive-card {
+  padding: 0.7rem 0.75rem;
+  border: 1px solid var(--main-border-color);
+  border-radius: 0.25rem;
+  background: var(--card-bg);
+  box-shadow: 0 0.12rem 0.28rem rgba(0, 0, 0, 0.18);
+}
+
+.academic-archive-card > h2 {
+  margin: 0 0 0.55rem;
+  font-size: 1.08rem;
+  font-weight: 400;
+}
+
+.academic-archive-skills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.academic-skill-group h3 {
+  margin: 0 0 0.15rem;
+  color: var(--link-color);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.academic-skill-group h3 i {
+  display: inline-block;
+  width: 1rem;
+  color: var(--link-color);
+}
+
+.academic-skill-group ul {
+  margin: 0;
+  padding: 0 0 0 0.95rem;
+  list-style: none;
+}
+
+.academic-skill-group li {
+  color: var(--link-color);
+  font-size: 0.65rem;
+  line-height: 1.38;
+}
+
+.academic-cv-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.academic-cv-list > li {
+  padding: 0.48rem 0;
+  border-bottom: 1px solid var(--main-border-color);
+}
+
+.academic-cv-list > li:first-child { padding-top: 0.2rem; }
+.academic-cv-list > li:last-child { padding-bottom: 0; border-bottom: 0; }
+
+.academic-cv-row {
+  display: grid;
+  grid-template-columns: 6.1rem minmax(0, 1fr);
+  gap: 0.4rem;
+  align-items: start;
+}
+
+.academic-cv-date {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.12rem;
+}
+
+.academic-cv-date span {
+  display: inline-block;
+  min-width: 3.4rem;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.1rem;
+  background: #3b69c5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: 0.52rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.academic-cv-detail h3 {
+  margin: 0 0 0.12rem;
+  color: var(--link-color);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.academic-cv-detail p {
+  margin: 0.08rem 0;
+  color: var(--text-muted-color);
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+
+.academic-cv-detail p.academic-cv-location { font-style: italic; }
+
+.academic-cv-detail ul {
+  margin: 0.15rem 0 0;
+  padding-left: 0.95rem;
+}
+
+.academic-cv-detail li {
+  color: var(--text-muted-color);
+  font-size: 0.66rem;
+  line-height: 1.32;
+}
+
+@media (max-width: 575.98px) {
+  .academic-archive-card { padding: 0.65rem; }
+  .academic-cv-row { grid-template-columns: 5.3rem minmax(0, 1fr); gap: 0.25rem; }
+  .academic-cv-detail p, .academic-cv-detail li { font-size: 0.64rem; }
+}
+
+@media (max-width: 390px) {
+  .academic-archive-skills { grid-template-columns: 1fr; gap: 0.35rem; }
+  .academic-cv-row { grid-template-columns: 4.75rem minmax(0, 1fr); }
+  .academic-cv-date span { min-width: 3.1rem; font-size: 0.48rem; }
+}
