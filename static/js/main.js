@@ -736,11 +736,6 @@
      ------------------------------------------------------------ */
 
   function getRoute() {
-    if ((global.location.hash || '').indexOf('#/') === 0) {
-      const legacyPath = global.location.hash.slice(1) || '/';
-      global.history.replaceState(null, '', legacyPath);
-    }
-
     let path = global.location.pathname || '/';
 
     if (path === '/index.html') {
