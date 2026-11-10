@@ -163,4 +163,6 @@ GitHub Pages 设置：仓库 **Settings → Pages → Build and deployment → S
 
 `404.html` 是干净 URL 的回退页：直接访问 `/about/`、`/blog/`、`/posts/.../` 时，GitHub Pages 会用 `404.html` 加载站点，再由前端按当前路径渲染对应页面。修改 `index.html` 后，记得同步复制一份为 `404.html`。
 
+> 这种方式页面能正常显示，但直接访问不存在的目录时 HTTP 状态码仍是 404。若需要 200 状态码和更好的 SEO，需要为每个路由生成真实的 `index.html` 目录副本。
+
 > 本地预览请使用 `python serve.py` 或 `open-site.bat`，它会对不存在的页面路径回退到 `index.html`；直接用 `python -m http.server` 时，刷新 `/about/` 这类路径会 404。
