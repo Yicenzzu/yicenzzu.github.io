@@ -184,10 +184,6 @@
           return;
         }
 
-        if (/^\/(blog|publications|projects|archives|about|posts)(\/|$)/.test(href)) {
-          link.setAttribute('href', '#' + href);
-        }
-
         if (/^https?:\/\//i.test(href) && link.hostname && link.hostname !== global.location.hostname) {
           link.target = '_blank';
           link.rel = 'noopener noreferrer';
@@ -256,10 +252,10 @@
 
     const siteTitle = $('#site-title');
     siteTitle.textContent = title;
-    siteTitle.href = '#/';
+    siteTitle.href = '/';
 
     $('#site-subtitle').textContent = config.tagline || '';
-    $('#avatar').href = '#/';
+    $('#avatar').href = '/';
 
     if (config.avatar) {
       $('#avatar-img').src = config.avatar;
@@ -280,7 +276,7 @@
     const items = state.config.nav || [];
     $('#nav-list').innerHTML = items
       .map(function (item) {
-        const href = item.id === 'home' ? '#/' : '#/' + item.id + '/';
+        const href = item.id === 'home' ? '/' : '/' + item.id + '/';
         return (
           '<li class="nav-item">' +
           '<a class="nav-link" data-nav="' +
@@ -333,7 +329,7 @@
       year +
       '">' +
       year +
-      '</time> <a href="#/">' +
+      '</time> <a href="/">' +
       copyright +
       '</a>. ' +
       (footer.license_url
@@ -375,7 +371,7 @@
           return '<span aria-current="page">' + escapeHtml(item.label) + '</span>';
         }
         return (
-          '<a href="' + escapeHtml(item.url || '#/') + '">' + escapeHtml(item.label) + '</a>' +
+          '<a href="' + escapeHtml(item.url || '/') + '">' + escapeHtml(item.label) + '</a>' +
           '<span class="breadcrumb-sep" aria-hidden="true">/</span>'
         );
       })
@@ -431,7 +427,7 @@
         '<p class="academic-eyebrow">404</p>' +
         '<h1>Page not found</h1>' +
         '<p>The page you requested does not exist or has moved.</p>' +
-        '<a class="button" href="#/"><i class="fas fa-arrow-left fa-fw"></i>Back to home</a>' +
+        '<a class="button" href="/"><i class="fas fa-arrow-left fa-fw"></i>Back to home</a>' +
         '</div>'
     );
     hidePanel();
@@ -473,7 +469,7 @@
     const hero = config.hero || {};
     const links = (hero.links || [])
       .map(function (link) {
-        return '<a href="' + escapeHtml(link.url || '#/') + '">' + escapeHtml(link.label) + '</a>';
+        return '<a href="' + escapeHtml(link.url || '/') + '">' + escapeHtml(link.label) + '</a>';
       })
       .join('');
     const bio = SiteUtils.renderMarkdown((page.data && page.data.bio) || '');
@@ -534,7 +530,7 @@
     window.Blog.renderList($('#blog-list'));
 
     setActiveNav('blog');
-    updateBreadcrumb([{ label: 'Home', url: '#/' }, { label: title }]);
+    updateBreadcrumb([{ label: 'Home', url: '/' }, { label: title }]);
     setPageMeta(title, description);
     renderRecentPanel();
   }
@@ -565,7 +561,7 @@
     }
 
     setActiveNav(nav.id);
-    updateBreadcrumb([{ label: 'Home', url: '#/' }, { label: title }]);
+    updateBreadcrumb([{ label: 'Home', url: '/' }, { label: title }]);
     setPageMeta(title, description);
   }
 
@@ -615,8 +611,8 @@
 
     setActiveNav('blog');
     updateBreadcrumb([
-      { label: 'Home', url: '#/' },
-      { label: 'Blog', url: '#/blog/' },
+      { label: 'Home', url: '/' },
+      { label: 'Blog', url: '/blog/' },
       { label: result.post.title }
     ]);
     setPageMeta(result.post.title, result.post.excerpt);
@@ -662,7 +658,7 @@
         posts
           .map(function (post) {
             return (
-              '<li><a href="#/posts/' +
+              '<li><a href="/posts/' +
               encodeURIComponent(post.slug) +
               '/">' +
               escapeHtml(post.title) +
@@ -740,12 +736,18 @@
      ------------------------------------------------------------ */
 
   function getRoute() {
-    const hash = global.location.hash || '';
-    if (!hash || hash === '#' || hash === '#/') {
+    let path = global.location.pathname || '/';
+
+    if (path === '/index.html') {
       return { type: 'page', id: 'home' };
     }
 
-    const path = hash.replace(/^#\/?/, '').replace(/\/+$/, '');
+    path = path.replace(/\/+$/, '') || '/';
+
+    if (path === '/') {
+      return { type: 'page', id: 'home' };
+    }
+
     const parts = path.split('/').filter(Boolean);
 
     if (parts[0] === 'posts' && parts[1]) {
@@ -806,7 +808,7 @@
           return {
             type: 'Page',
             title: (page.data && page.data.title) || nav.label,
-            url: nav.id === 'home' ? '#/' : '#/' + nav.id + '/',
+            url: nav.id === 'home' ? '/' : '/' + nav.id + '/',
             text: (bioText + ' ' + bodyText).replace(/\s+/g, ' ').trim()
           };
         } catch (error) {
@@ -1259,12 +1261,26 @@
 
       const searchResult = event.target.closest('#search-results a.search-result');
       if (searchResult) {
-        const href = searchResult.getAttribute('href');
         closeSearch();
-        if (global.location.hash === href) {
-          route();
+      }
+
+      const internalLink = event.target.closest('a[href]');
+      if (
+        internalLink &&
+        internalLink.getAttribute('target') !== '_blank' &&
+        !internalLink.hasAttribute('download')
+      ) {
+        const href = internalLink.getAttribute('href');
+        if (
+          href &&
+          /^\/(?:$|(?:blog|publications|projects|archives|about|posts)(?:\/|$))/.test(href)
+        ) {
+          event.preventDefault();
+          if (href !== global.location.pathname + global.location.search) {
+            global.history.pushState(null, '', href);
+            route();
+          }
         }
-        return;
       }
 
       if (!event.target.closest('.mode-menu')) {
@@ -1336,7 +1352,7 @@
       console.error('Posts could not be loaded:', error);
     }
 
-    global.addEventListener('hashchange', route);
+    global.addEventListener('popstate', route);
     await route();
     buildSearchIndex();
   }

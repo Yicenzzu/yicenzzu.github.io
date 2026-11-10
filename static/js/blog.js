@@ -170,7 +170,7 @@
       '<article class="card-wrapper">' +
       '<a class="post-preview' +
       (post.cover ? ' post-preview--with-cover' : '') +
-      '" href="#/posts/' +
+      '" href="/posts/' +
       encodeURIComponent(post.slug) +
       '/">' +
       cover +
@@ -238,14 +238,14 @@
       ? ''
       : '<nav class="post-navigation" aria-label="Post navigation">' +
       (older
-        ? '<a class="post-nav-link post-nav-link--prev" href="#/posts/' +
+        ? '<a class="post-nav-link post-nav-link--prev" href="/posts/' +
           encodeURIComponent(older.slug) +
           '/"><span class="post-nav-label"><i class="fas fa-arrow-left fa-fw"></i> Older</span><span class="post-nav-title">' +
           U.escapeHtml(older.title) +
           '</span></a>'
         : '<span class="post-nav-link is-disabled"></span>') +
       (newer
-        ? '<a class="post-nav-link post-nav-link--next" href="#/posts/' +
+        ? '<a class="post-nav-link post-nav-link--next" href="/posts/' +
           encodeURIComponent(newer.slug) +
           '/"><span class="post-nav-label">Newer <i class="fas fa-arrow-right fa-fw"></i></span><span class="post-nav-title">' +
           U.escapeHtml(newer.title) +
@@ -289,7 +289,7 @@
       return {
         type: 'Post',
         title: post.title,
-        url: '#/posts/' + encodeURIComponent(post.slug) + '/',
+        url: '/posts/' + encodeURIComponent(post.slug) + '/',
         text: post.text,
         date: post.date ? U.formatDate(post.date) : ''
       };

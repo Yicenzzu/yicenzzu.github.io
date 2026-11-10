@@ -28,11 +28,11 @@ hero:
   image_alt: Portrait of Haotian Li
   links:
     - label: Selected publications
-      url: "#/publications/"
+      url: /publications/
     - label: Research projects
-      url: "#/projects/"
+      url: /projects/
     - label: CV & experience
-      url: "#/archives/"
+      url: /archives/
 
 # ------------------------------------------------------------
 #  Sidebar navigation

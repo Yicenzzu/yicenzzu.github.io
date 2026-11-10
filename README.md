@@ -10,6 +10,8 @@
 .
 ├── config.yml                   # 站点配置：标题、Hero、导航、页脚
 ├── index.html                   # 唯一页面骨架
+├── 404.html                     # GitHub Pages 干净 URL 回退页面
+├── serve.py                     # 本地预览服务器（支持干净 URL）
 ├── open-site.bat                # Windows 一键预览（启动本地服务器）
 ├── _pages/                      # 固定页面内容
 │   ├── home.md                  # 个人主页 / 简介
@@ -50,10 +52,10 @@
 
 ```powershell
 cd "C:\Users\haotian.li\academic-blog-canonical - 副本"
-python -m http.server 8000
+python serve.py 8000
 ```
 
-然后打开 <http://localhost:8000>。
+然后打开 <http://127.0.0.1:8000/>。
 
 如果使用 VS Code，也可以安装 Live Server 插件，右键 `index.html` → *Open with Live Server*。
 
@@ -67,7 +69,7 @@ python -m http.server 8000
 
 - `title`、`tagline`、`description`、`avatar`
 - `hero`：首页的眉标、标题、职位、头像和三个链接
-- `nav`：侧边栏导航顺序与图标（`id` 同时是 `#/id/` 路由）
+- `nav`：侧边栏导航顺序与图标（`id` 同时是 `/id/` 路由）
 - `social`：侧边栏底部社交图标
 - `footer`：页脚版权、协议和署名
 
@@ -128,9 +130,9 @@ _posts/
    ];
    ```
 
-   slug 会自动从文件名去掉日期前缀得到，也就是 `#/posts/my-new-post/`。
+   slug 会自动从文件名去掉日期前缀得到，也就是 `/posts/my-new-post/`。
 
-3. 文章会自动按日期倒序出现在首页 “Latest notes” 和 `#/blog/` 列表里，同时进入搜索索引。
+3. 文章会自动按日期倒序出现在首页 “Latest notes” 和 `/blog/` 列表里，同时进入搜索索引。
 
 ### 替换图片
 
@@ -147,7 +149,7 @@ _posts/
 
 - 侧边栏 + 移动端抽屉导航
 - Light / Dark / System 三种主题，自动记住选择
-- Hash 路由（`#/about/`、`#/posts/...`），无需服务器 rewrite
+- 干净 URL 路由（`/about/`、`/posts/...`），无 `#`
 - 站内搜索（页面 + 文章），按 `/` 快速打开
 - 文章目录、阅读时长、上一篇 / 下一篇
 - 图片点击放大
@@ -155,8 +157,10 @@ _posts/
 
 ## 部署
 
-把整个目录上传到任意静态托管即可（GitHub Pages、Cloudflare Pages、Netlify、Vercel、Nginx……）。**不要漏掉 `static` 目录**。所有路径都是相对 `index.html` 的，因此放在子路径（例如 `https://name.github.io/repo/`）也能正常工作。
+把整个目录上传到任意静态托管即可（GitHub Pages、Cloudflare Pages、Netlify、Vercel、Nginx……）。**不要漏掉 `static` 和 `_posts` 目录**。页面通过根路径访问，当前配置面向 `https://<username>.github.io/` 这种域名根目录部署。
 
-GitHub Pages 设置：仓库 **Settings → Pages → Build and deployment → Source: Deploy from a branch**，选择分支根目录即可。仓库里不要保留 Jekyll 的构建配置，本目录已经是最终静态文件。
+GitHub Pages 设置：仓库 **Settings → Pages → Build and deployment → Source: Deploy from a branch**，选择 `main` 分支的 `/(root)` 目录。仓库里不要保留 Jekyll 的构建配置，本目录已经是最终静态文件；`.nojekyll` 必须保留。
 
-> 由于使用 hash 路由，直接访问 `https://.../#/blog/` 没问题；直接访问 `https://.../blog/` 不会命中页面。站内链接都已使用 `#/...` 形式。
+`404.html` 是干净 URL 的回退页：直接访问 `/about/`、`/blog/`、`/posts/.../` 时，GitHub Pages 会用 `404.html` 加载站点，再由前端按当前路径渲染对应页面。修改 `index.html` 后，记得同步复制一份为 `404.html`。
+
+> 本地预览请使用 `python serve.py` 或 `open-site.bat`，它会对不存在的页面路径回退到 `index.html`；直接用 `python -m http.server` 时，刷新 `/about/` 这类路径会 404。

@@ -16,11 +16,11 @@ pause
 exit /b 1
 
 :run_python
-start "Academic Blog Server" cmd /k python -m http.server 8000 --bind 127.0.0.1
+start "Academic Blog Server" cmd /k python serve.py 8000
 goto open_browser
 
 :run_py
-start "Academic Blog Server" cmd /k py -m http.server 8000 --bind 127.0.0.1
+start "Academic Blog Server" cmd /k py serve.py 8000
 goto open_browser
 
 :open_browser
